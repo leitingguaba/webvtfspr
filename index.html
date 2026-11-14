@@ -1,0 +1,4008 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark light">
+<title>VTF ⇄ PNG 双向转换工具</title>
+<style>
+:root{
+  color-scheme:dark;
+  --font-sans:"SF Pro Text","Segoe UI Variable Text","Segoe UI","PingFang SC","HarmonyOS Sans SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --font-mono:"JetBrains Mono","SFMono-Regular","Cascadia Mono",Menlo,Consolas,monospace;
+
+  --bg:#0c0b0a;
+  --bg2:#151310;
+  --card:#121110;
+  --card2:#1b1916;
+  --line:rgba(255,244,232,.09);
+  --line2:rgba(255,244,232,.17);
+  --txt:#f2ede7;
+  --txt2:#b3aca3;
+  --txt3:#7d766d;
+  --brand:#e0703c;
+  --brand-hi:#eb8250;
+  --brand2:#f0a06c;
+  --ok:#63bd8e;
+  --warn:#d9a54b;
+  --err:#e27070;
+  --shadow:0 18px 48px rgba(0,0,0,.5);
+  --panel-shadow:inset 0 1px 0 rgba(255,244,232,.03), 0 28px 64px -40px rgba(0,0,0,.9);
+  --modal-shadow:0 48px 100px -36px rgba(0,0,0,.75);
+  --item-shadow:0 14px 34px -24px rgba(0,0,0,.9);
+  --accent-ink:#1a0d06;
+  --bar-bg:rgba(12,11,10,.76);
+
+  /* 主题派生令牌：深色为默认值 */
+  --glow1:rgba(224,112,60,.13);
+  --glow2:rgba(217,165,75,.05);
+  --gridline:rgba(255,244,232,.022);
+  --h1a:#f4efe8;
+  --h1b:#cfc7bd;
+  --h1c:#e0703c;
+  --surface-1:rgba(255,244,232,.028);
+  --surface-1b:rgba(255,244,232,.01);
+  --surface-2:rgba(255,244,232,.055);
+  --surface-3:rgba(255,244,232,.045);
+  --surface-4:rgba(255,244,232,.09);
+  --surface-5:rgba(255,244,232,.015);
+  --surface-6:rgba(255,244,232,.012);
+  --surface-7:rgba(255,244,232,.04);
+  --track:rgba(255,244,232,.16);
+  --knob:#fdf8f2;
+  --spin-track:rgba(255,244,232,.16);
+  --brand-soft:#f0a882;
+  --brand-soft2:#f6c3a4;
+  --brand-soft3:#fbdcc9;
+  --purple-soft:#cfc7bd;
+  --ok-soft:#7fd3a8;
+  --warn-soft:#ebc06c;
+  --err-soft:#f09494;
+  --err-soft2:#f7b0b0;
+  --ok-bg:rgba(99,189,142,.13);
+  --warn-bg:rgba(217,165,75,.13);
+  --err-bg:rgba(226,112,112,.05);
+  --err-bg2:rgba(226,112,112,.11);
+  --err-bg3:rgba(226,112,112,.14);
+  --err-bg4:rgba(226,112,112,.18);
+  --err-bd:rgba(226,112,112,.42);
+  --err-bd2:rgba(226,112,112,.3);
+  --err-bd3:rgba(226,112,112,.4);
+  --brand-bd:rgba(224,112,60,.36);
+  --brand-bd2:rgba(224,112,60,.5);
+  --brand-bd3:rgba(224,112,60,.62);
+  --brand-bg:rgba(224,112,60,.06);
+  --brand-bg2:rgba(224,112,60,.11);
+  --brand-bg3:rgba(224,112,60,.11);
+  --brand-bg4:rgba(224,112,60,.18);
+  --brand-ring:rgba(224,112,60,.1);
+  --brand-ring2:rgba(224,112,60,.22);
+  --brand-ring3:rgba(224,112,60,.13);
+  --logo-a:rgba(224,112,60,.1);
+  --logo-b:rgba(224,112,60,.04);
+  --icon-a:rgba(224,112,60,.16);
+  --icon-b:rgba(224,112,60,.04);
+  --pill-a:rgba(224,112,60,.9);
+  --pill-b:rgba(224,112,60,.9);
+  --purple-bg:rgba(255,244,232,.06);
+  --purple-bg2:rgba(255,244,232,.06);
+  --checker-bg:#211e1b;
+  --checker:#191614;
+  --prev-bg:#211e1b;
+  --prev:#191614;
+  --mask:rgba(6,5,4,.78);
+  --cmpline:#fdf8f2;
+  --cmpshadow:rgba(0,0,0,.55);
+  --palbdr:rgba(0,0,0,.4);
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f6f3ed;
+  --bg2:#fbf9f5;
+  --card:#fffdfa;
+  --card2:#ffffff;
+  --line:rgba(32,26,20,.1);
+  --line2:rgba(32,26,20,.2);
+  --txt:#201b16;
+  --txt2:#575047;
+  --txt3:#837b70;
+  --brand:#b04a1d;
+  --brand-hi:#9c3f16;
+  --brand2:#c76a3b;
+  --ok:#2f855a;
+  --warn:#9a6a12;
+  --err:#b83a3a;
+  --shadow:0 18px 44px rgba(60,45,30,.14);
+  --panel-shadow:inset 0 1px 0 #fff, 0 28px 54px -38px rgba(60,45,30,.4);
+  --modal-shadow:0 44px 90px -36px rgba(60,45,30,.45);
+  --item-shadow:0 14px 30px -24px rgba(60,45,30,.45);
+  --accent-ink:#fff8f2;
+  --bar-bg:rgba(246,243,237,.82);
+
+  --glow1:rgba(176,74,29,.07);
+  --glow2:rgba(154,106,18,.05);
+  --gridline:rgba(32,26,20,.025);
+  --h1a:#1e1914;
+  --h1b:#6b5f52;
+  --h1c:#b04a1d;
+  --surface-1:rgba(32,26,20,.025);
+  --surface-1b:rgba(32,26,20,.012);
+  --surface-2:rgba(32,26,20,.055);
+  --surface-3:rgba(32,26,20,.04);
+  --surface-4:rgba(32,26,20,.085);
+  --surface-5:rgba(32,26,20,.018);
+  --surface-6:rgba(32,26,20,.015);
+  --surface-7:rgba(32,26,20,.045);
+  --track:rgba(32,26,20,.16);
+  --knob:#fff;
+  --spin-track:rgba(32,26,20,.14);
+  --brand-soft:#9a4118;
+  --brand-soft2:#8a3912;
+  --brand-soft3:#7a320f;
+  --purple-soft:#575047;
+  --ok-soft:#256b49;
+  --warn-soft:#7d5510;
+  --err-soft:#a52f2f;
+  --err-soft2:#8f2727;
+  --ok-bg:rgba(47,133,90,.1);
+  --warn-bg:rgba(154,106,18,.1);
+  --err-bg:rgba(184,58,58,.045);
+  --err-bg2:rgba(184,58,58,.09);
+  --err-bg3:rgba(184,58,58,.1);
+  --err-bg4:rgba(184,58,58,.14);
+  --err-bd:rgba(184,58,58,.32);
+  --err-bd2:rgba(184,58,58,.26);
+  --err-bd3:rgba(184,58,58,.34);
+  --brand-bd:rgba(176,74,29,.3);
+  --brand-bd2:rgba(176,74,29,.42);
+  --brand-bd3:rgba(176,74,29,.55);
+  --brand-bg:rgba(176,74,29,.05);
+  --brand-bg2:rgba(176,74,29,.09);
+  --brand-bg3:rgba(176,74,29,.09);
+  --brand-bg4:rgba(176,74,29,.14);
+  --brand-ring:rgba(176,74,29,.1);
+  --brand-ring2:rgba(176,74,29,.18);
+  --brand-ring3:rgba(176,74,29,.12);
+  --logo-a:rgba(176,74,29,.08);
+  --logo-b:rgba(176,74,29,.03);
+  --icon-a:rgba(176,74,29,.12);
+  --icon-b:rgba(176,74,29,.03);
+  --pill-a:rgba(176,74,29,.95);
+  --pill-b:rgba(176,74,29,.95);
+  --purple-bg:rgba(32,26,20,.05);
+  --purple-bg2:rgba(32,26,20,.05);
+  --checker-bg:#eeeae2;
+  --checker:#e3ded4;
+  --prev-bg:#eeeae2;
+  --prev:#e3ded4;
+  --mask:rgba(46,38,30,.35);
+  --cmpline:#fffdfa;
+  --cmpshadow:rgba(0,0,0,.25);
+  --palbdr:rgba(32,26,20,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}
+body{
+  min-height:100dvh;
+  background:var(--bg);
+  color:var(--txt);
+  font:14px/1.65 var(--font-sans);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  padding:34px 20px 88px;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(880px 500px at 88% -12%, var(--glow1), transparent 68%),
+    radial-gradient(720px 460px at 4% -6%, var(--glow2), transparent 70%);
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(var(--gridline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--gridline) 1px, transparent 1px);
+  background-size:72px 72px;
+  -webkit-mask-image:radial-gradient(ellipse 74% 44% at 50% 0%, #000, transparent 78%);
+  mask-image:radial-gradient(ellipse 74% 44% at 50% 0%, #000, transparent 78%);
+}
+.wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto}
+::selection{background:var(--brand-bg4);color:var(--txt)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+/* ---------- theme toggle ---------- */
+.theme-toggle{
+  position:fixed;top:18px;right:18px;z-index:60;
+  display:inline-flex;align-items:center;gap:7px;
+  padding:8px 13px;border-radius:999px;border:1px solid var(--line);
+  background:var(--bar-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  color:var(--txt2);font:inherit;font-size:11.5px;letter-spacing:.02em;
+  cursor:pointer;box-shadow:var(--shadow);
+  transition:border-color .18s,color .18s,transform .18s;white-space:nowrap;
+}
+.theme-toggle:hover{border-color:var(--brand-bd);color:var(--txt)}
+.theme-toggle:active{transform:scale(.97)}
+.theme-toggle svg{width:14px;height:14px;flex:0 0 auto;opacity:.85}
+.theme-toggle:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+/* ---------- header ---------- */
+header{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:40px;
+  padding-bottom:26px;border-bottom:1px solid var(--line);margin-bottom:2px;
+}
+.head-main{min-width:0}
+.logo{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:4px 12px 4px 4px;border-radius:999px;
+  border:1px solid var(--line);background:var(--surface-1);
+  font-size:10px;color:var(--txt3);letter-spacing:.14em;margin-bottom:18px;
+}
+.logo b{
+  width:22px;height:22px;border-radius:6px;display:grid;place-items:center;
+  background:var(--brand);color:var(--accent-ink);
+  font-size:11px;font-weight:700;letter-spacing:0;
+}
+h1{
+  font-size:clamp(27px,3.6vw,38px);line-height:1.12;font-weight:650;letter-spacing:-.03em;
+  color:var(--txt);display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;
+}
+h1 .gly{color:var(--brand);font-weight:500}
+h1 .h1-soft{font-size:.5em;font-weight:500;letter-spacing:0;color:var(--txt3)}
+.sub{color:var(--txt3);font-size:13px;line-height:1.7;margin-top:12px;max-width:58ch}
+.head-meta{display:flex;flex-wrap:wrap;padding-bottom:4px}
+.meta{padding:0 18px;border-left:1px solid var(--line)}
+.meta:first-child{border-left:0;padding-left:0}
+.meta:last-child{padding-right:0}
+.meta-k{display:block;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;color:var(--txt3);margin-bottom:4px;text-transform:uppercase}
+.meta-v{font-size:12px;color:var(--txt2);font-weight:500;white-space:nowrap}
+@media(max-width:760px){
+  header{flex-direction:column;align-items:flex-start;gap:20px;padding-bottom:22px}
+  .meta{padding:0 16px}
+  .meta:first-child{padding-left:0}
+  h1{gap:8px}
+}
+
+/* ---------- dropzone ---------- */
+.drop{
+  position:relative;margin-top:26px;padding:34px 30px;
+  border-radius:18px;border:1px dashed var(--line2);
+  background:var(--surface-1);
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:24px;
+  cursor:pointer;overflow:hidden;
+  transition:border-color .22s,background .22s,transform .22s,box-shadow .22s;
+}
+.drop::after{
+  content:"";position:absolute;right:-40px;top:-80px;width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,var(--glow1),transparent 66%);
+  pointer-events:none;opacity:.55;
+}
+.drop:hover{border-color:var(--brand-bd2);background:var(--brand-bg)}
+.drop:active{transform:scale(.998)}
+.drop.over{border-color:var(--brand);background:var(--brand-bg2);transform:scale(1.004);box-shadow:0 0 0 4px var(--brand-ring)}
+.drop .ico{
+  width:58px;height:58px;border-radius:16px;display:grid;place-items:center;flex:0 0 auto;
+  background:var(--surface-2);border:1px solid var(--line);color:var(--brand-soft);
+  animation:float 5.5s ease-in-out infinite;
+}
+.drop .ico svg{width:26px;height:26px}
+.drop-copy{min-width:0}
+.drop h3{font-size:15.5px;font-weight:600;letter-spacing:-.01em}
+.drop p{color:var(--txt3);font-size:12.5px;margin-top:5px;line-height:1.6}
+.drop .types{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:380px}
+.chip{
+  font-size:10px;letter-spacing:.02em;padding:3px 8px;border-radius:6px;
+  background:transparent;border:1px solid var(--line);color:var(--txt3);
+  font-family:var(--font-mono);white-space:nowrap;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media(max-width:820px){
+  .drop{grid-template-columns:1fr;justify-items:center;text-align:center;gap:16px;padding:30px 22px}
+  .drop .types{justify-content:center;max-width:200px}
+}
+
+/* ---------- options ---------- */
+.panel{
+  margin-top:22px;border-radius:18px;background:var(--card);
+  border:1px solid var(--line);box-shadow:var(--panel-shadow);overflow:hidden;
+}
+.panel-h{
+  display:flex;align-items:center;gap:10px;padding:13px 20px;
+  border-bottom:1px solid var(--line);
+}
+.panel-h .dot{width:6px;height:6px;border-radius:2px;background:var(--brand);transform:rotate(45deg);flex:0 0 auto}
+.panel-h h2{font-size:12.5px;font-weight:600;letter-spacing:.02em}
+.panel-h h2::before{content:"01";font-family:var(--font-mono);font-size:10px;color:var(--txt3);letter-spacing:.06em;margin-right:9px}
+.panel-h .note{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--txt3);letter-spacing:.02em}
+.panel-b{padding:18px 20px 20px}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 20px}
+@media(max-width:820px){.opts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.opts{grid-template-columns:1fr}}
+/* 每个 .opt 内部按列排布，控件区撑满剩余高度，让高度不同的控件（下拉框/开关组）垂直居中对齐 */
+.opt{display:flex;flex-direction:column;min-width:0}
+/* 只作用于 .opt 的直接子级文字标签；用后代选择器会误伤 .sw 开关本身的 <label> */
+.opt > label{display:block;font-size:11px;color:var(--txt3);margin-bottom:7px;letter-spacing:.02em}
+select,input[type=text]{
+  width:100%;padding:9px 11px;border-radius:10px;background:var(--bg2);
+  border:1px solid var(--line);color:var(--txt);font-size:12.5px;outline:none;
+  font-family:inherit;transition:border-color .16s,box-shadow .16s,background .16s;
+}
+select:hover,input[type=text]:hover{border-color:var(--line2)}
+select:focus,input[type=text]:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-ring3)}
+select{cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2.5 4.5L6 8L9.5 4.5' stroke='%237d766d' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;
+}
+.switches{display:flex;flex-wrap:wrap;gap:16px;align-items:center;flex:1;align-content:center}
+.sw{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;font-size:12.5px}
+.sw input{display:none}
+.sw .track{
+  width:38px;height:22px;border-radius:99px;background:var(--track);
+  position:relative;transition:background .2s;flex:0 0 auto;
+}
+.sw .track::after{
+  content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;
+  background:var(--knob);box-shadow:0 1px 3px rgba(0,0,0,.3);
+  transition:transform .2s cubic-bezier(.16,1,.3,1);
+}
+.sw input:checked + .track{background:var(--brand)}
+.sw input:checked + .track::after{transform:translateX(16px)}
+.sw input:focus-visible + .track{box-shadow:0 0 0 3px var(--brand-ring3)}
+.sw span.lbl{color:var(--txt2)}
+.hint{font-size:11.5px;color:var(--txt3);margin-top:18px;line-height:1.8;border-left:1px solid var(--line);padding-left:14px}
+
+/* ---------- presets ---------- */
+.presets{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:18px}
+.presets .plabel{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;color:var(--txt3);margin-right:4px;text-transform:uppercase}
+.pill{
+  padding:6px 13px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;
+  background:transparent;border:1px solid var(--line);color:var(--txt2);
+  transition:border-color .16s,background .16s,color .16s,transform .16s;white-space:nowrap;
+}
+.pill:hover{border-color:var(--brand-bd);color:var(--brand-soft);background:var(--brand-bg)}
+.pill:active{transform:scale(.97)}
+.pill.on{background:var(--brand);border-color:transparent;color:var(--accent-ink);font-weight:600}
+.pill.ghost{margin-left:auto;border-style:dashed;color:var(--txt3);font-family:var(--font-mono);font-size:11px}
+.pill.ghost:hover{color:var(--brand-soft);border-color:var(--brand-bd)}
+.row{display:flex;gap:8px;align-items:center}
+.row input{flex:1;min-width:0}
+.row .btn{flex:0 0 auto}
+
+/* ---------- advanced ---------- */
+.adv{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+.adv summary{
+  cursor:pointer;font-size:11.5px;color:var(--txt2);list-style:none;display:flex;align-items:center;gap:8px;
+  user-select:none;padding:2px 0;transition:color .16s;
+}
+.adv summary:hover{color:var(--txt)}
+.adv summary::-webkit-details-marker{display:none}
+.adv summary::before{
+  content:"";width:0;height:0;border-left:4px solid var(--txt3);
+  border-top:3.5px solid transparent;border-bottom:3.5px solid transparent;transition:transform .16s;
+}
+.adv[open] summary::before{transform:rotate(90deg)}
+.adv .opts{margin-top:14px}
+
+/* ---------- queue bar ---------- */
+.bar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  margin:28px 0 14px;padding:0 2px 13px;
+  border-bottom:1px solid var(--line);
+}
+.bar h2{font-size:14px;font-weight:600;letter-spacing:-.01em}
+.bar h2::before{content:"02";font-family:var(--font-mono);font-size:10px;font-weight:400;color:var(--txt3);letter-spacing:.06em;margin-right:9px}
+.bar .cnt{font-family:var(--font-mono);font-size:10.5px;color:var(--txt3);padding:3px 8px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line)}
+.bar .right{margin-left:auto;display:flex;gap:8px}
+.btn{
+  padding:8px 14px;border-radius:10px;border:1px solid var(--line);
+  background:var(--surface-3);color:var(--txt2);font-size:12px;cursor:pointer;font-family:inherit;
+  transition:background .16s,border-color .16s,color .16s,transform .12s;white-space:nowrap;
+}
+.btn:hover{background:var(--surface-4);border-color:var(--line2);color:var(--txt)}
+.btn:active{transform:translateY(1px) scale(.985)}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.btn.primary{background:var(--brand);border-color:transparent;color:var(--accent-ink);font-weight:600;box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+.btn.primary:hover{background:var(--brand-hi);color:var(--accent-ink)}
+.btn.sm{padding:4px 10px;font-size:11px;border-radius:7px}
+.btn.danger:hover{background:var(--err-bg3);border-color:var(--err-bd3);color:var(--err-soft)}
+.btn.ghost{background:transparent}
+
+.list{display:flex;flex-direction:column;gap:8px}
+.item{
+  display:flex;gap:14px;align-items:center;padding:12px 14px;border-radius:13px;
+  background:var(--card);border:1px solid var(--line);
+  transition:border-color .18s,box-shadow .18s,background .18s;
+  animation:item-in .45s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes item-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.item:hover{border-color:var(--line2);box-shadow:var(--item-shadow)}
+.item.err{border-color:var(--err-bd);background:var(--err-bg)}
+.item.dragging{opacity:.45;border-style:dashed}
+.item.dropzone{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand-ring2)}
+.thumbbox{
+  width:64px;height:64px;flex:0 0 auto;position:relative;
+  border-radius:10px;overflow:hidden;
+}
+.thumbbox .thumb{width:100%;height:100%;border-radius:10px}
+.thumbbox > .spin{position:absolute;left:50%;top:50%;margin:-7px 0 0 -7px}
+.thumbbox .thumbbad{
+  width:100%;height:100%;display:grid;place-items:center;border-radius:10px;
+  border:1px solid var(--err-bd);background:var(--err-bg2);
+  color:var(--err-soft);font-size:19px;font-weight:600;
+}
+.thumb{
+  width:64px;height:64px;border-radius:10px;flex:0 0 auto;cursor:zoom-in;
+  background-color:var(--checker-bg);
+  background-image:
+    linear-gradient(45deg,var(--checker) 25%,transparent 25%,transparent 75%,var(--checker) 75%),
+    linear-gradient(45deg,var(--checker) 25%,transparent 25%,transparent 75%,var(--checker) 75%);
+  background-size:12px 12px;background-position:0 0,6px 6px;
+  border:1px solid var(--line);object-fit:contain;display:block;
+}
+.meta{flex:1;min-width:0}
+.name{
+  font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  display:flex;align-items:center;gap:8px;letter-spacing:-.005em;
+}
+.arrow{
+  padding:2px 6px;border-radius:4px;font-size:9.5px;font-weight:600;letter-spacing:.04em;
+  background:var(--brand-bg2);color:var(--brand-soft);flex:0 0 auto;font-family:var(--font-mono);
+}
+.arrow.rev{background:var(--surface-2);color:var(--txt2)}
+.info{font-size:10.5px;color:var(--txt3);margin-top:4px;display:flex;flex-wrap:wrap;gap:3px 12px;font-family:var(--font-mono)}
+.info b{color:var(--txt2);font-weight:500}
+.tag{
+  display:inline-block;padding:0 6px;border-radius:4px;font-size:9.5px;line-height:16px;
+  background:var(--surface-2);color:var(--txt2);font-family:var(--font-mono);
+}
+.tag.a{background:var(--ok-bg);color:var(--ok-soft)}
+.tag.b{background:var(--warn-bg);color:var(--warn-soft)}
+.acts{display:flex;gap:6px;flex:0 0 auto;align-items:center}
+.badge-err{font-size:11.5px;color:var(--err-soft);margin-top:4px;line-height:1.5}
+.mini{
+  width:auto;padding:4px 24px 4px 8px;font-size:11px;border-radius:7px;
+  background-color:var(--surface-3);border:1px solid var(--line);color:var(--txt2);
+  background-position:right 7px center;
+}
+.mini:hover{border-color:var(--line2)}
+.errbox{
+  display:none;margin-top:12px;padding:13px 14px;border-radius:10px;background:var(--bg2);
+  border:1px solid var(--err-bd2);color:var(--err-soft2);font-size:11px;line-height:1.75;
+  font-family:var(--font-mono);white-space:pre-wrap;word-break:break-word;
+  max-height:38vh;overflow:auto;
+}
+
+/* 细进度条 */
+.prog{
+  position:relative;height:3px;border-radius:99px;background:var(--surface-4);
+  margin-top:7px;overflow:hidden;max-width:340px;
+}
+.prog > i{
+  position:absolute;left:0;top:0;bottom:0;width:0;border-radius:99px;
+  background:var(--brand);transition:width .12s linear;
+}
+.prog.indet > i{width:35%;animation:indet 1.1s ease-in-out infinite}
+@keyframes indet{0%{left:-35%}100%{left:100%}}
+
+.empty{
+  padding:56px 24px;text-align:center;color:var(--txt3);font-size:12.5px;
+  border:1px dashed var(--line);border-radius:16px;background:var(--surface-6);
+}
+.empty-ico{
+  width:46px;height:46px;margin:0 auto 16px;border-radius:13px;
+  border:1px dashed var(--line2);display:grid;place-items:center;color:var(--txt3);
+}
+.empty-ico svg{width:20px;height:20px}
+.empty p{line-height:1.7}
+
+/* ---------- modal ---------- */
+.mask{
+  position:fixed;inset:0;background:var(--mask);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:none;place-items:center;z-index:70;padding:28px;
+}
+.mask.on{display:grid;animation:fade-in .18s ease both}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+.modal{
+  background:var(--card);border:1px solid var(--line2);border-radius:18px;
+  width:min(900px,94vw);max-height:88vh;overflow:auto;box-shadow:var(--modal-shadow);
+  animation:modal-in .28s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes modal-in{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+.modal-h{
+  display:flex;align-items:center;gap:10px;padding:13px 18px;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:var(--card);z-index:2;
+}
+.modal-h h3{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:44%;letter-spacing:-.005em}
+.modal-h .x{
+  margin-left:auto;width:28px;height:28px;border-radius:8px;border:1px solid var(--line);
+  background:transparent;color:var(--txt2);cursor:pointer;font-size:15px;line-height:1;
+  transition:background .16s,color .16s,border-color .16s;
+}
+.modal-h .x:hover{background:var(--err-bg3);border-color:var(--err-bd3);color:var(--err-soft)}
+.tabs{display:flex;gap:3px;margin-left:14px;background:var(--surface-2);padding:3px;border-radius:9px}
+.tab{
+  padding:4px 11px;border-radius:7px;border:0;background:transparent;color:var(--txt3);
+  font-size:11.5px;cursor:pointer;font-family:inherit;transition:background .16s,color .16s;
+}
+.tab:hover{color:var(--txt2)}
+.tab.on{background:var(--brand-bg4);color:var(--brand-soft2)}
+.modal-b{padding:18px}
+.pane{display:none}
+.pane.on{display:block}
+.prev-wrap{
+  border-radius:12px;overflow:hidden;border:1px solid var(--line);
+  background-color:var(--prev-bg);
+  background-image:
+    linear-gradient(45deg,var(--prev) 25%,transparent 25%,transparent 75%,var(--prev) 75%),
+    linear-gradient(45deg,var(--prev) 25%,transparent 25%,transparent 75%,var(--prev) 75%);
+  background-size:18px 18px;background-position:0 0,9px 9px;
+  display:grid;place-items:center;padding:10px;
+}
+.prev-wrap img{max-width:100%;max-height:52vh;display:block;image-rendering:pixelated}
+.mipbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.mipbar label{font-size:11px;color:var(--txt3)}
+.mipbar select{width:auto;min-width:190px;padding:5px 26px 5px 9px;font-size:11.5px;border-radius:8px}
+.mipbar .btn{white-space:nowrap}
+.paltitle{font-size:10.5px;color:var(--txt3);margin:16px 0 7px;font-family:var(--font-mono);letter-spacing:.02em}
+.pal{display:grid;grid-template-columns:repeat(16,1fr);gap:3px;max-width:340px}
+.pal i{display:block;aspect-ratio:1/1;border-radius:3px;border:1px solid var(--palbdr);transition:transform .12s}
+.pal i:hover{transform:scale(1.18)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:16px}
+.kv div{
+  padding:9px 11px;border-radius:9px;background:var(--bg2);border:1px solid var(--line);
+}
+.kv dt{font-size:9.5px;color:var(--txt3);letter-spacing:.06em;margin-bottom:3px;font-family:var(--font-mono);text-transform:uppercase}
+.kv dd{font-size:12px;font-family:var(--font-mono);word-break:break-all;color:var(--txt)}
+.flags{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+.flags span{
+  font-size:9.5px;letter-spacing:.02em;padding:2px 7px;border-radius:5px;
+  background:var(--brand-bg2);color:var(--brand-soft);font-family:var(--font-mono);
+}
+
+/* 对比视图 */
+.cmp{position:relative;display:block;width:fit-content;max-width:100%;margin:0 auto;border-radius:12px;overflow:hidden;
+  border:1px solid var(--line);background-color:var(--prev-bg);background-image:
+    linear-gradient(45deg,var(--prev) 25%,transparent 25%,transparent 75%,var(--prev) 75%),
+    linear-gradient(45deg,var(--prev) 25%,transparent 25%,transparent 75%,var(--prev) 75%);
+  background-size:18px 18px;background-position:0 0,9px 9px;}
+.cmp img{display:block;max-width:100%;max-height:52vh;image-rendering:pixelated;user-select:none}
+.cmp img.b{position:absolute;left:0;top:0;width:100%;height:100%;clip-path:inset(0 50% 0 0)}
+.cmpline{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--cmpline);box-shadow:0 0 8px var(--cmpshadow);pointer-events:none}
+.rng{width:100%;margin-top:14px;accent-color:var(--brand)}
+.cmpnote{font-size:11px;color:var(--txt3);margin-top:10px;text-align:center}
+
+/* ---------- toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(70px);
+  background:var(--card2);border:1px solid var(--line2);color:var(--txt);
+  padding:10px 18px;border-radius:11px;font-size:12.5px;box-shadow:var(--shadow);
+  opacity:0;transition:opacity .25s,transform .3s cubic-bezier(.16,1,.3,1);z-index:99;pointer-events:none;max-width:80vw;text-align:center;
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- busy ---------- */
+.busy{display:none;align-items:center;gap:9px;font-size:11.5px;color:var(--txt2)}
+.busy.on{display:inline-flex}
+.busy .btn{padding:3px 9px;font-size:11px}
+.spin{
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid var(--spin-track);border-top-color:var(--brand);
+  animation:sp .7s linear infinite;
+}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+footer{
+  margin-top:40px;padding-top:22px;border-top:1px solid var(--line);
+  text-align:center;color:var(--txt3);font-size:11px;line-height:1.8;letter-spacing:.01em;
+}
+footer code{
+  background:var(--surface-2);padding:1px 5px;border-radius:4px;
+  font-family:var(--font-mono);
+}
+@media(max-width:640px){
+  body{padding:26px 14px 72px}
+  h1{font-size:25px}
+  .item{flex-wrap:wrap}
+  .acts{width:100%;justify-content:flex-end}
+  .presets .ghost{margin-left:0}
+  .theme-toggle{top:12px;right:12px;padding:8px}
+  .theme-toggle .tl{display:none}
+  .bar{margin-top:22px}
+  .mask{padding:14px}
+  .modal-h h3{max-width:34%}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+}
+</style>
+<script>
+(function(){
+  try{
+    var m = localStorage.getItem('vtf-theme') || 'auto';
+    if(m !== 'auto' && m !== 'light' && m !== 'dark') m = 'auto';
+    var dark;
+    if(m === 'dark') dark = true;
+    else if(m === 'light') dark = false;
+    else dark = !window.matchMedia || window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var r = document.documentElement;
+    r.dataset.themeMode = m;
+    r.dataset.theme = dark ? 'dark' : 'light';
+  }catch(e){}
+})();
+</script>
+</head>
+<body>
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="切换主题" title="主题：跟随系统">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 010 18z" fill="currentColor" stroke="none"/>
+  </svg>
+  <span class="tl">跟随系统</span>
+</button>
+<div class="wrap">
+
+<header>
+  <div class="head-main">
+    <div class="logo"><b>V</b> VALVE TEXTURE FORMAT · 纯前端转换</div>
+    <h1>VTF <span class="gly">⇄</span> PNG<span class="h1-soft">双向转换工具</span></h1>
+    <p class="sub">拖入文件自动识别方向 · 支持 ZIP 批量导入、动画拆帧与 APNG 导出 · 全程在浏览器本地完成</p>
+  </div>
+  <div class="head-meta">
+    <div class="meta"><span class="meta-k">处理</span><b class="meta-v">本地浏览器</b></div>
+    <div class="meta"><span class="meta-k">上传</span><b class="meta-v">零上传</b></div>
+    <div class="meta"><span class="meta-k">队列</span><b class="meta-v">多线程</b></div>
+  </div>
+</header>
+
+<div class="drop" id="drop">
+  <div class="ico">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 15v3a2 2 0 002 2h12a2 2 0 002-2v-3"/>
+    </svg>
+  </div>
+  <div class="drop-copy">
+    <h3>拖放文件到此处，或点击 / 粘贴</h3>
+    <p>支持批量，可混合放入 VTF、图片与 ZIP；Ctrl+V 可直接粘贴剪贴板里的图片</p>
+  </div>
+  <div class="types">
+    <span class="chip">.vtf</span><span class="chip">.png</span>
+    <span class="chip">.jpg</span><span class="chip">.webp</span>
+    <span class="chip">.bmp</span><span class="chip">.gif</span><span class="chip">.zip</span>
+  </div>
+  <input type="file" id="file" multiple accept=".vtf,.png,.jpg,.jpeg,.webp,.bmp,.gif,.zip" hidden>
+</div>
+
+<div class="panel">
+  <div class="panel-h">
+    <span class="dot"></span>
+    <h2>转换设置</h2>
+    <span class="note">仅影响「图片 → VTF」方向</span>
+  </div>
+  <div class="panel-b">
+    <div class="presets" id="presets">
+      <span class="plabel">预设</span>
+      <button class="pill" data-preset="diffuse">游戏漫反射</button>
+      <button class="pill" data-preset="normal">法线贴图</button>
+      <button class="pill" data-preset="ui">UI 遮罩</button>
+      <button class="pill" data-preset="glow">HDR 光晕</button>
+      <button class="pill ghost" id="copyCfg">复制配置链接</button>
+    </div>
+    <div class="opts">
+      <div class="opt">
+        <label>VTF 图像格式</label>
+        <select id="fmt">
+          <option value="auto">自动 — 按 Alpha 分布智能选择</option>
+          <option value="12">BGRA8888 — 无损 32 位（推荐，VTFEdit 默认）</option>
+          <option value="13">DXT1 — 压缩 4 bpp，1 位 Alpha</option>
+          <option value="15">DXT5 — 压缩 8 bpp，完整 Alpha</option>
+          <option value="14">DXT3 — 压缩 8 bpp，硬边 Alpha</option>
+          <option value="0">RGBA8888 — 无损 32 位（R 通道在前）</option>
+          <option value="3">BGR888 — 无损 24 位，无 Alpha</option>
+          <option value="5">I8 — 8 位灰度</option>
+          <option value="6">IA88 — 灰度 + 8 位 Alpha</option>
+          <option value="8">A8 — 仅 Alpha</option>
+        </select>
+      </div>
+      <div class="opt">
+        <label>非 2 次幂尺寸处理</label>
+        <select id="npot">
+          <option value="scale">自动缩放到最近的 2 次幂（拉伸）</option>
+          <option value="keep">保持原尺寸（NPOT，部分游戏不支持）</option>
+          <option value="crop">居中裁切到最近 2 次幂</option>
+          <option value="pad">等比缩放后补透明边到 2 次幂</option>
+        </select>
+      </div>
+      <div class="opt">
+        <label>Mipmap / 缩略图</label>
+        <div class="switches">
+          <label class="sw"><input type="checkbox" id="mip" checked><span class="track"></span><span class="lbl">生成 Mipmap</span></label>
+          <label class="sw"><input type="checkbox" id="low" checked><span class="track"></span><span class="lbl">生成缩略图</span></label>
+        </div>
+      </div>
+      <div class="opt">
+        <label>DXT 压缩质量</label>
+        <select id="quality">
+          <option value="fast">快速 — 包围盒端点（无 PCA，最快）</option>
+          <option value="normal" selected>标准 — PCA + 极值端点</option>
+          <option value="high">高质量 — 4 组候选端点择优</option>
+        </select>
+      </div>
+      <div class="opt">
+        <label>Mipmap 过滤</label>
+        <select id="filter">
+          <option value="box" selected>Box — 2×2 均值（快）</option>
+          <option value="triangle">Triangle — 3×3 帐篷权重（平滑）</option>
+        </select>
+      </div>
+      <div class="opt">
+        <label>编码选项</label>
+        <div class="switches">
+          <label class="sw"><input type="checkbox" id="srgb"><span class="track"></span><span class="lbl">sRGB</span></label>
+          <label class="sw"><input type="checkbox" id="premult"><span class="track"></span><span class="lbl">预乘 Alpha</span></label>
+        </div>
+      </div>
+    </div>
+
+    <details class="adv">
+      <summary>高级：写入 VTF 头的元数据（Reflectivity / Bump Scale / Flags）</summary>
+      <div class="opts">
+        <div class="opt">
+          <label>Reflectivity（r,g,b）</label>
+          <input type="text" id="reflect" value="1,1,1" spellcheck="false">
+        </div>
+        <div class="opt">
+          <label>Bump Scale</label>
+          <input type="text" id="bump" value="1" spellcheck="false">
+        </div>
+        <div class="opt">
+          <label>Flags（十六进制）</label>
+          <div class="row">
+            <input type="text" id="flagsHex" placeholder="留空 = 自动" spellcheck="false">
+            <button class="btn sm" id="flagRec">推荐</button>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <p class="hint">
+      Source 引擎要求纹理边长为 2 的幂（2 / 4 / … / 1024 / 2048）。DXT 为有损压缩，适合漫反射贴图与游戏内使用；
+      带渐变 Alpha 的贴图请选 DXT5，纯色或镂空贴图选 DXT1 即可省一半体积。预乘 Alpha 用于半透明 UI 贴图，可避免 DXT 压缩后边缘发白。
+    </p>
+  </div>
+</div>
+
+<div class="bar">
+  <h2>转换队列</h2>
+  <span class="cnt" id="cnt">0 个文件</span>
+  <div class="busy" id="busy"><span class="spin"></span><span id="busyTxt">处理中…</span><button class="btn sm" id="cancel">取消</button></div>
+  <div class="right">
+    <button class="btn" id="dlAll" disabled>下载全部 (ZIP)</button>
+    <button class="btn danger" id="clear" disabled>清空</button>
+  </div>
+</div>
+
+<div class="list" id="list"></div>
+<div class="empty" id="empty">
+  <div class="empty-ico">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 8V5.5A1.5 1.5 0 015.5 4H8M16 4h2.5A1.5 1.5 0 0120 5.5V8M20 16v2.5a1.5 1.5 0 01-1.5 1.5H16M8 20H5.5A1.5 1.5 0 014 18.5V16"/>
+      <path d="M12 9v5m0 0l-2-2m2 2l2-2"/>
+    </svg>
+  </div>
+  <p>还没有文件。上面拖一个进来试试 —— VTF 出 PNG，PNG 出 VTF。</p>
+</div>
+
+<footer>
+  由雷霆瓜巴制作<span style="opacity:.45;margin:0 8px">·</span>G-Droid 中文社区交流群：<b style="color:var(--txt2);font-weight:500">1032641850</b>
+</footer>
+
+</div>
+
+<div class="mask" id="mask">
+  <div class="modal">
+    <div class="modal-h">
+      <h3 id="mTitle">预览</h3>
+      <div class="tabs" id="mTabs">
+        <button class="tab on" data-tab="preview">预览</button>
+        <button class="tab" data-tab="cmp">对比</button>
+      </div>
+      <button class="x" id="mClose">×</button>
+    </div>
+    <div class="modal-b">
+      <div class="pane on" id="panePreview">
+        <div class="prev-wrap"><img id="mImg" alt="预览"></div>
+        <div class="mipbar" id="mipBar" style="display:none">
+          <label>Mip 级别</label>
+          <select id="mipSel"></select>
+          <button class="btn sm" id="btnMips">导出全部 mip（ZIP）</button>
+          <button class="btn sm" id="btnFaces" style="display:none">导出 6 面（ZIP）</button>
+          <button class="btn sm" id="btnAnim" style="display:none">导出动画（APNG）</button>
+        </div>
+        <div class="paltitle" id="palTitle" style="display:none">P8 调色板（256 色，点击色块可复制十六进制）</div>
+        <div class="pal" id="pal"></div>
+      </div>
+      <div class="pane" id="paneCmp">
+        <div class="cmp" id="cmp">
+          <img id="cmpA" alt="原图">
+          <img id="cmpB" class="b" alt="转换结果">
+          <span class="cmpline" id="cmpline"></span>
+        </div>
+        <input type="range" id="cmpRange" class="rng" min="0" max="100" value="50">
+        <p class="cmpnote" id="cmpNote">左：原图　右：VTF 解码回读（拖动滑块对比压缩损失）</p>
+      </div>
+      <pre class="errbox" id="errBox"></pre>
+      <div class="kv" id="mKv"></div>
+      <div class="flags" id="mFlags"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var root = document.documentElement;
+  var btn = document.getElementById('themeToggle');
+  if(!btn) return;
+  var label = btn.querySelector('.tl');
+  var KEY = 'vtf-theme';
+  var ORDER = ['auto','light','dark'];
+  var LABELS = { auto:'跟随系统', light:'浅色', dark:'深色' };
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+  function currentMode(){
+    var m = root.dataset.themeMode;
+    return ORDER.indexOf(m) >= 0 ? m : 'auto';
+  }
+  function apply(mode){
+    if(ORDER.indexOf(mode) < 0) mode = 'auto';
+    root.dataset.themeMode = mode;
+    var dark = mode === 'dark' || (mode === 'auto' && (!mq || mq.matches));
+    root.dataset.theme = dark ? 'dark' : 'light';
+    if(label) label.textContent = LABELS[mode];
+    btn.title = '主题：' + LABELS[mode] + '（点击切换）';
+    btn.setAttribute('aria-label', '切换主题，当前' + LABELS[mode]);
+    try{ localStorage.setItem(KEY, mode); }catch(e){}
+  }
+  function sync(){ apply(currentMode()); }
+
+  btn.addEventListener('click', function(){
+    var i = ORDER.indexOf(currentMode());
+    apply(ORDER[(i + 1) % ORDER.length]);
+  });
+  if(mq){
+    if(mq.addEventListener) mq.addEventListener('change', sync);
+    else if(mq.addListener) mq.addListener(sync);
+  }
+  sync();
+})();
+</script>
+
+<script id="vtf-engine">
+"use strict";
+/* =========================================================================
+ *  VTF 引擎  ——  纯计算，零 DOM 依赖
+ *  同时被主线程与 Worker 复用：主页面直接执行本段，Worker 通过 Blob 复用同一份源码
+ *  1. 常量与工具
+ *  2. VTF 解码（DXT / 未压缩 / 半浮点 / P8 调色板）
+ *  3. VTF 编码（DXT 压缩 / mipmap / 未压缩格式）
+ *  4. 校验与辅助
+ * ======================================================================= */
+
+/* ---------------------- 1. 常量与工具 ---------------------- */
+
+// Source 引擎 ImageFormat 枚举
+const FMT = {
+  RGBA8888:0, ABGR8888:1, RGB888:2, BGR888:3, RGB565:4, I8:5, IA88:6, P8:7, A8:8,
+  RGB888_BLUESCREEN:9, BGR888_BLUESCREEN:10, ARGB8888:11, BGRA8888:12,
+  DXT1:13, DXT3:14, DXT5:15, BGRX8888:16, BGR565:17, BGRX5551:18, BGRA4444:19,
+  DXT1_ONEBITALPHA:20, BGRA5551:21, UV88:22, UVWQ8888:23,
+  RGBA16161616F:24, RGBA16161616:25, UVLX8888:26, NONE:-1
+};
+
+// bpp: 每像素位数；blk: 压缩格式每 4x4 块字节数（0 表示未压缩）
+const FMT_INFO = {
+   0:{n:'RGBA8888',bpp:32,blk:0},   1:{n:'ABGR8888',bpp:32,blk:0},
+   2:{n:'RGB888',bpp:24,blk:0},     3:{n:'BGR888',bpp:24,blk:0},
+   4:{n:'RGB565',bpp:16,blk:0},     5:{n:'I8',bpp:8,blk:0},
+   6:{n:'IA88',bpp:16,blk:0},       7:{n:'P8',bpp:8,blk:0},
+   8:{n:'A8',bpp:8,blk:0},          9:{n:'RGB888(BS)',bpp:24,blk:0},
+  10:{n:'BGR888(BS)',bpp:24,blk:0},11:{n:'ARGB8888',bpp:32,blk:0},
+  12:{n:'BGRA8888',bpp:32,blk:0},  13:{n:'DXT1',bpp:4,blk:8},
+  14:{n:'DXT3',bpp:8,blk:16},      15:{n:'DXT5',bpp:8,blk:16},
+  16:{n:'BGRX8888',bpp:32,blk:0},  17:{n:'BGR565',bpp:16,blk:0},
+  18:{n:'BGRX5551',bpp:16,blk:0},  19:{n:'BGRA4444',bpp:16,blk:0},
+  20:{n:'DXT1(1bitA)',bpp:4,blk:8},21:{n:'BGRA5551',bpp:16,blk:0},
+  22:{n:'UV88',bpp:16,blk:0},      23:{n:'UVWQ8888',bpp:32,blk:0},
+  24:{n:'RGBA16161616F',bpp:64,blk:0}, 25:{n:'RGBA16161616',bpp:64,blk:0},
+  26:{n:'UVLX8888',bpp:32,blk:0},  '-1':{n:'NONE',bpp:0,blk:0}
+};
+
+const FLAGS = [
+  [0x00000001,'POINTSAMPLE'],[0x00000002,'TRILINEAR'],[0x00000004,'CLAMPS'],
+  [0x00000008,'CLAMPT'],[0x00000010,'ANISOTROPIC'],[0x00000020,'HINT_DXT5'],
+  [0x00000040,'SRGB'],[0x00000080,'NORMAL'],[0x00000100,'NOMIP'],
+  [0x00000200,'NOLOD'],[0x00000400,'ALL_MIPS'],[0x00000800,'PROCEDURAL'],
+  [0x00001000,'ONEBITALPHA'],[0x00002000,'EIGHTBITALPHA'],[0x00004000,'ENVMAP'],
+  [0x00008000,'RENDERTARGET'],[0x00010000,'DEPTHRENDERTARGET'],
+  [0x00020000,'NODEBUGOVERRIDE'],[0x00040000,'SINGLECOPY'],
+  [0x00080000,'ONEOVERMIPLEVELINALPHA'],[0x00100000,'PREMULTCOLORBYONEOVERMIPLEVEL'],
+  [0x00200000,'NORMALTODUDV'],[0x00400000,'ALPHATESTMIPGENERATION'],
+  [0x00800000,'NODEPTHBUFFER'],[0x01000000,'NICEFILTERED'],[0x02000000,'CLAMPU'],
+  [0x04000000,'VERTEXTEXTURE'],[0x08000000,'SSBUMP'],[0x20000000,'BORDER']
+];
+const FLAG = {
+  POINTSAMPLE:0x1, TRILINEAR:0x2, CLAMPS:0x4, CLAMPT:0x8, SRGB:0x40,
+  NORMAL:0x80, NOMIP:0x100, NOLOD:0x200, ALL_MIPS:0x400, ONEBITALPHA:0x1000,
+  EIGHTBITALPHA:0x2000, ENVMAP:0x4000, BORDER:0x20000000
+};
+
+// [PERF] 1.2 大小端探测：小端时 32 位格式可以整像素搬运
+const LE = (new Uint8Array(new Uint32Array([1]).buffer))[0] === 1;
+
+function fmtName(f){ return (FMT_INFO[f]||{n:'未知('+f+')'}).n; }
+function flagList(f){ return FLAGS.filter(x=>f&x[0]).map(x=>x[1]); }
+function isCompressed(f){ return (FMT_INFO[f]||{blk:0}).blk > 0; }
+
+function clamp8(v){ v = v|0; return v<0?0:v>255?255:v; }
+function isPow2(v){ return v>0 && (v & (v-1)) === 0; }
+function nextPow2(v){ let p=1; while(p<v) p<<=1; return p; }
+function prevPow2(v){ let p=1; while(p<<1 <= v) p<<=1; return p; }
+function fmtBytes(n){
+  if(n<1024) return n+' B';
+  if(n<1048576) return (n/1024).toFixed(1)+' KB';
+  return (n/1048576).toFixed(2)+' MB';
+}
+function rgb565(r,g,b){ return ((r>>3)<<11) | ((g>>2)<<5) | (b>>3); }
+function h2f(h){
+  const s=(h&0x8000)?-1:1, e=(h>>10)&0x1F, f=h&0x3FF;
+  if(e===0) return s*Math.pow(2,-14)*(f/1024);
+  if(e===31) return f?NaN:s*Infinity;
+  return s*Math.pow(2,e-15)*(1+f/1024);
+}
+
+/* ---------------------- 2. VTF 解码 ---------------------- */
+
+// 计算某级 mipmap 的尺寸
+function mipDims(w,h,lvl){
+  let mw = w >> lvl, mh = h >> lvl;
+  if(mw < 1) mw = 1;
+  if(mh < 1) mh = 1;
+  return [mw,mh];
+}
+// 计算某级 mipmap 的数据字节数
+function mipSize(w,h,depth,fmt){
+  const fi = FMT_INFO[fmt];
+  if(!fi) throw new Error('不支持的图像格式 ID: ' + fmt);
+  const d = depth > 1 ? depth : 1;
+  if(fi.blk){
+    return ((w+3)>>2) * ((h+3)>>2) * fi.blk * d;
+  }
+  return w * h * d * (fi.bpp >> 3);
+}
+
+// 解析 VTF 文件头
+function parseVTFHeader(buf){
+  if(buf.byteLength < 80) throw new Error('文件太小，不是合法的 VTF');
+  const dv = new DataView(buf);
+  const sig = String.fromCharCode(
+    dv.getUint8(0), dv.getUint8(1), dv.getUint8(2), dv.getUint8(3));
+  if(sig !== 'VTF\u0000')
+    throw new Error('签名不是 "VTF\\0"，该文件不是 VTF 贴图（实际读到: ' +
+      sig.replace(/[^\x20-\x7e]/g,'.') + '）');
+
+  const vMaj = dv.getInt32(4,true), vMin = dv.getInt32(8,true);
+  let headerSize = dv.getUint32(12,true);
+  const w = dv.getUint16(16,true), h = dv.getUint16(18,true);
+  const flags = dv.getUint32(20,true);
+  const frames = Math.max(1, dv.getUint16(24,true));
+  const firstFrame = dv.getUint16(26,true);
+  const reflect = [
+    dv.getFloat32(32,true), dv.getFloat32(36,true), dv.getFloat32(40,true)];
+  const bumpScale = dv.getFloat32(48,true);
+  const hiFmt = dv.getInt32(52,true);
+  const mipCount = Math.max(1, dv.getUint8(56));
+  const loFmt = dv.getInt32(57,true);
+  const loW = dv.getUint8(61), loH = dv.getUint8(62);
+  const depth = (vMaj > 7 || (vMaj === 7 && vMin >= 2))
+    ? Math.max(1, dv.getUint16(63,true)) : 1;
+
+  if(!FMT_INFO[hiFmt]) throw new Error('未知的高分辨率图像格式 ID: ' + hiFmt);
+  if(!w || !h) throw new Error('贴图尺寸非法: ' + w + '×' + h);
+  if(w > 16384 || h > 16384) throw new Error('贴图尺寸过大: ' + w + '×' + h);
+
+  // headerSize 理应 16 字节对齐，遇到被改过的文件就按字段长度兜底
+  const minHdr = (vMaj > 7 || (vMaj === 7 && vMin >= 2)) ? 65 : 63;
+  if(headerSize < minHdr || headerSize > 4096){
+    headerSize = ((minHdr + 15) >> 4) << 4;   // 7.0→64, 7.2+→80
+  }
+  return { vMaj, vMin, headerSize, w, h, flags, frames, firstFrame,
+           reflect, bumpScale, hiFmt, mipCount, loFmt, loW, loH, depth };
+}
+
+// 计算指定 frame/face/slice/mip 在主图像数据区的偏移
+function vtfImageOffset(hd, frame, face, slice, mip){
+  const faces = (hd.flags & FLAG.ENVMAP) ? 6 : 1;
+  const depth = hd.depth > 1 ? hd.depth : 1;
+  let off = hd.headerSize;
+
+  // 缩略图（low-res）放在主图像数据之前
+  if(hd.loFmt !== FMT.NONE && FMT_INFO[hd.loFmt] && hd.loW && hd.loH){
+    off += mipSize(hd.loW, hd.loH, 1, hd.loFmt);
+  }
+  // 主图像数据排列顺序：frame → face → slice(z) → mip(小→大)
+  for(let f = 0; f < frame; f++)
+    for(let c = 0; c < faces; c++)
+      for(let z = 0; z < depth; z++)
+        for(let i = hd.mipCount - 1; i >= 0; i--){
+          const d = mipDims(hd.w, hd.h, i);
+          off += mipSize(d[0], d[1], 1, hd.hiFmt);
+        }
+  for(let c = 0; c < face; c++)
+    for(let z = 0; z < depth; z++)
+      for(let i = hd.mipCount - 1; i >= 0; i--){
+        const d = mipDims(hd.w, hd.h, i);
+        off += mipSize(d[0], d[1], 1, hd.hiFmt);
+      }
+  for(let z = 0; z < slice; z++)
+    for(let i = hd.mipCount - 1; i >= 0; i--){
+      const d = mipDims(hd.w, hd.h, i);
+      off += mipSize(d[0], d[1], 1, hd.hiFmt);
+    }
+  // mip 由小到大排布，目标 mip 之前是比它更小的那些
+  for(let i = hd.mipCount - 1; i > mip; i--){
+    const d = mipDims(hd.w, hd.h, i);
+    off += mipSize(d[0], d[1], 1, hd.hiFmt);
+  }
+  return off;
+}
+
+// [FIX] 0.3 P8 调色板位于全部 frame/face/slice/mip 数据之后，而不是紧随当前 mip
+function p8PaletteOffset(hd){
+  const faces = (hd.flags & FLAG.ENVMAP) ? 6 : 1;
+  const depth = hd.depth > 1 ? hd.depth : 1;
+  let off = hd.headerSize;
+  if(hd.loFmt !== FMT.NONE && FMT_INFO[hd.loFmt] && hd.loW && hd.loH){
+    off += mipSize(hd.loW, hd.loH, 1, hd.loFmt);
+  }
+  let perImage = 0;
+  for(let i = hd.mipCount - 1; i >= 0; i--){
+    const d = mipDims(hd.w, hd.h, i);
+    perImage += mipSize(d[0], d[1], 1, hd.hiFmt);
+  }
+  return off + perImage * hd.frames * faces * depth;
+}
+
+/* ---- DXT 解压 ---- */
+
+function unpack565(c, out, o){
+  const r = (c >> 11) & 31, g = (c >> 5) & 63, b = c & 31;
+  out[o]   = (r << 3) | (r >> 2);
+  out[o+1] = (g << 2) | (g >> 4);
+  out[o+2] = (b << 3) | (b >> 2);
+  out[o+3] = 255;
+}
+
+// 解一个 DXT1 颜色块（4×4）
+function decodeDXT1BlockAt(src, so, bx, by, w, h, out){
+  // [FIX] 0.4 改用函数内局部调色板，避免并行/嵌套调用时踩共享缓冲
+  const pal = new Uint8Array(16);
+  const c0 = src[so] | (src[so+1] << 8);
+  const c1 = src[so+2] | (src[so+3] << 8);
+  unpack565(c0, pal, 0);
+  unpack565(c1, pal, 4);
+  if(c0 > c1){                                  // 4 色，全不透明
+    pal[8]  = (2*pal[0] + pal[4] + 1) / 3;
+    pal[9]  = (2*pal[1] + pal[5] + 1) / 3;
+    pal[10] = (2*pal[2] + pal[6] + 1) / 3;
+    pal[11] = 255;
+    pal[12] = (pal[0] + 2*pal[4] + 1) / 3;
+    pal[13] = (pal[1] + 2*pal[5] + 1) / 3;
+    pal[14] = (pal[2] + 2*pal[6] + 1) / 3;
+    pal[15] = 255;
+  }else{                                        // 3 色 + 索引 3 为透明黑
+    pal[8]  = (pal[0] + pal[4]) >> 1;
+    pal[9]  = (pal[1] + pal[5]) >> 1;
+    pal[10] = (pal[2] + pal[6]) >> 1;
+    pal[11] = 255;
+    pal[12] = pal[13] = pal[14] = pal[15] = 0;
+  }
+  const bits = (src[so+4] | (src[so+5]<<8) | (src[so+6]<<16) | ((src[so+7]<<24) >>> 0)) >>> 0;
+  for(let py = 0; py < 4; py++){
+    const yy = by*4 + py;
+    if(yy >= h) break;
+    for(let px = 0; px < 4; px++){
+      const xx = bx*4 + px;
+      if(xx >= w) continue;
+      const idx = ((bits >>> (py*8 + px*2)) & 3) * 4;
+      const o = (yy*w + xx) * 4;
+      out[o]   = pal[idx];
+      out[o+1] = pal[idx+1];
+      out[o+2] = pal[idx+2];
+      out[o+3] = pal[idx+3];
+    }
+  }
+}
+
+// 解一个 DXT5 alpha 块（8 字节：a0 a1 + 48 位索引）
+const _aTab = new Uint8Array(8);
+function decodeDXT5AlphaBlockAt(src, ao, bx, by, w, h, out){
+  const a0 = src[ao], a1 = src[ao+1];
+  const t = _aTab;
+  t[0] = a0; t[1] = a1;
+  if(a0 > a1){
+    for(let i = 1; i < 7; i++) t[i+1] = ((7-i)*a0 + i*a1 + 3) / 7;   // 8 级插值
+  }else{
+    for(let i = 1; i < 5; i++) t[i+1] = ((5-i)*a0 + i*a1 + 2) / 5;   // 6 级插值 + 0/255
+    t[6] = 0; t[7] = 255;
+  }
+  for(let py = 0; py < 4; py++){
+    const yy = by*4 + py;
+    if(yy >= h) break;
+    for(let px = 0; px < 4; px++){
+      const xx = bx*4 + px;
+      if(xx >= w) continue;
+      // 3 位索引，48 位不能整体移位，逐位取
+      const bitPos = (py*4 + px) * 3;
+      let idx = 0;
+      for(let k = 0; k < 3; k++){
+        const p = bitPos + k;
+        idx |= ((src[ao + 2 + (p >> 3)] >> (p & 7)) & 1) << k;
+      }
+      out[(yy*w + xx)*4 + 3] = t[idx];
+    }
+  }
+}
+
+function decodeDXT(src, so, w, h, out, fmt){
+  const bw = (w+3)>>2, bh = (h+3)>>2;
+  for(let by = 0; by < bh; by++){
+    for(let bx = 0; bx < bw; bx++){
+      if(fmt === FMT.DXT1 || fmt === FMT.DXT1_ONEBITALPHA){
+        decodeDXT1BlockAt(src, so + (by*bw + bx)*8, bx, by, w, h, out);
+        continue;
+      }
+      // DXT3 / DXT5：每块 16 字节 = 8 字节 alpha + 8 字节颜色
+      // 注意顺序：颜色块解码会重写 alpha，所以必须先颜色、后 alpha
+      const ao = so + (by*bw + bx)*16;
+      decodeDXT1BlockAt(src, ao + 8, bx, by, w, h, out);
+      if(fmt === FMT.DXT5){
+        decodeDXT5AlphaBlockAt(src, ao, bx, by, w, h, out);
+      }else{
+        for(let py = 0; py < 4; py++){            // DXT3：4 位显式 alpha
+          const yy = by*4 + py;
+          if(yy >= h) break;
+          const av = src[ao + py*2] | (src[ao + py*2 + 1] << 8);
+          for(let px = 0; px < 4; px++){
+            const xx = bx*4 + px;
+            if(xx >= w) continue;
+            out[(yy*w + xx)*4 + 3] = ((av >>> (px*4)) & 15) * 17;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* ---- 未压缩格式解码 ---- */
+
+// 32 位格式统一走 Uint32 整像素搬运（[PERF] 1.2）；不满足对齐条件时退回逐字节
+function decodeUncompressed32(fmt, src, so, n, out){
+  const s32 = new Uint32Array(src.buffer, src.byteOffset + so, n);
+  const o32 = new Uint32Array(out.buffer, out.byteOffset, n);
+  let i, v;
+  switch(fmt){
+    case FMT.RGBA8888:
+    case FMT.UVWQ8888:
+    case FMT.UVLX8888:
+      o32.set(s32); return true;
+    case FMT.BGRA8888:
+      for(i = 0; i < n; i++){
+        v = s32[i];
+        o32[i] = ((v & 255) << 16) | (v & 0xFF00) | ((v >>> 16) & 255) | (v & 0xFF000000);
+      }
+      return true;
+    case FMT.BGRX8888:
+      for(i = 0; i < n; i++){
+        v = s32[i];
+        o32[i] = ((v & 255) << 16) | (v & 0xFF00) | ((v >>> 16) & 255) | 0xFF000000;
+      }
+      return true;
+    case FMT.ABGR8888:
+      for(i = 0; i < n; i++){
+        v = s32[i];
+        o32[i] = (v >>> 24) | ((v >>> 8) & 0xFF00) | ((v << 8) & 0xFF0000) | ((v & 255) << 24);
+      }
+      return true;
+    case FMT.ARGB8888:
+      for(i = 0; i < n; i++){
+        v = s32[i];
+        o32[i] = ((v >>> 8) & 0xFFFFFF) | ((v & 255) << 24);
+      }
+      return true;
+  }
+  return false;
+}
+
+function decodeUncompressed(fmt, src, so, w, h, out, paletteOff){
+  const n = w*h;
+
+  // [PERF] 1.2 32 位格式：整像素搬运，比四通道逐字节快 3~5 倍
+  const is32 = fmt===FMT.RGBA8888 || fmt===FMT.ABGR8888 || fmt===FMT.ARGB8888 ||
+               fmt===FMT.BGRA8888 || fmt===FMT.BGRX8888 ||
+               fmt===FMT.UVWQ8888 || fmt===FMT.UVLX8888;
+  if(is32 && LE && ((src.byteOffset + so) & 3) === 0 && ((out.byteOffset) & 3) === 0){
+    if(decodeUncompressed32(fmt, src, so, n, out)) return;
+  }
+
+  const bpp = FMT_INFO[fmt] ? (FMT_INFO[fmt].bpp >> 3) : 4;
+  let p = so;
+  for(let i = 0; i < n; i++, p += bpp){
+    const o = i*4;
+    switch(fmt){
+      case FMT.RGBA8888:
+        out[o]=src[p]; out[o+1]=src[p+1]; out[o+2]=src[p+2]; out[o+3]=src[p+3]; break;
+      case FMT.ABGR8888:
+        out[o]=src[p+3]; out[o+1]=src[p+2]; out[o+2]=src[p+1]; out[o+3]=src[p]; break;
+      case FMT.ARGB8888:
+        out[o]=src[p+1]; out[o+1]=src[p+2]; out[o+2]=src[p+3]; out[o+3]=src[p]; break;
+      case FMT.BGRA8888:
+        out[o]=src[p+2]; out[o+1]=src[p+1]; out[o+2]=src[p]; out[o+3]=src[p+3]; break;
+      case FMT.BGRX8888:
+        out[o]=src[p+2]; out[o+1]=src[p+1]; out[o+2]=src[p]; out[o+3]=255; break;
+      case FMT.RGB888:
+        out[o]=src[p]; out[o+1]=src[p+1]; out[o+2]=src[p+2]; out[o+3]=255; break;
+      case FMT.BGR888:
+        out[o]=src[p+2]; out[o+1]=src[p+1]; out[o+2]=src[p]; out[o+3]=255; break;
+      case FMT.RGB888_BLUESCREEN:
+        out[o]=src[p]; out[o+1]=src[p+1]; out[o+2]=src[p+2];
+        out[o+3] = (src[p]===0 && src[p+1]===0 && src[p+2]===255) ? 0 : 255; break;
+      case FMT.BGR888_BLUESCREEN:
+        out[o]=src[p+2]; out[o+1]=src[p+1]; out[o+2]=src[p];
+        out[o+3] = (src[p]===255 && src[p+1]===0 && src[p+2]===0) ? 0 : 255; break;
+      case FMT.RGB565: {
+        const v = src[p] | (src[p+1]<<8);
+        const r=(v>>11)&31, g=(v>>5)&63, b=v&31;
+        out[o]=(r<<3)|(r>>2); out[o+1]=(g<<2)|(g>>4); out[o+2]=(b<<3)|(b>>2); out[o+3]=255; break;
+      }
+      case FMT.BGR565: {
+        const v = src[p] | (src[p+1]<<8);
+        const b=(v>>11)&31, g=(v>>5)&63, r=v&31;
+        out[o]=(r<<3)|(r>>2); out[o+1]=(g<<2)|(g>>4); out[o+2]=(b<<3)|(b>>2); out[o+3]=255; break;
+      }
+      case FMT.BGRX5551: {
+        const v = src[p] | (src[p+1]<<8);
+        const b=(v>>11)&31, g=(v>>5)&31, r=(v>>1)&31;
+        out[o]=(r<<3)|(r>>2); out[o+1]=(g<<3)|(g>>2); out[o+2]=(b<<3)|(b>>2); out[o+3]=255; break;
+      }
+      case FMT.BGRA5551: {
+        const v = src[p] | (src[p+1]<<8);
+        const b=(v>>11)&31, g=(v>>5)&31, r=(v>>1)&31, a=v&1;
+        out[o]=(r<<3)|(r>>2); out[o+1]=(g<<3)|(g>>2); out[o+2]=(b<<3)|(b>>2); out[o+3]=a?255:0; break;
+      }
+      case FMT.BGRA4444: {
+        const v = src[p] | (src[p+1]<<8);
+        out[o]  = ((v>>4)&15)*17; out[o+1] = ((v>>8)&15)*17;
+        out[o+2] = ((v>>12)&15)*17; out[o+3] = (v&15)*17; break;
+      }
+      case FMT.I8:
+        out[o]=out[o+1]=out[o+2]=src[p]; out[o+3]=255; break;
+      case FMT.A8:
+        out[o]=out[o+1]=out[o+2]=255; out[o+3]=src[p]; break;
+      case FMT.IA88:
+        out[o]=out[o+1]=out[o+2]=src[p]; out[o+3]=src[p+1]; break;
+      case FMT.UV88: {
+        const u = (src[p]-128)/127, v = (src[p+1]-128)/127, z = 1-u*u-v*v;
+        out[o]=src[p]; out[o+1]=src[p+1];
+        out[o+2]=clamp8((Math.sqrt(Math.max(0,z))*127)+128); out[o+3]=255; break;
+      }
+      case FMT.UVWQ8888:
+        out[o]=src[p]; out[o+1]=src[p+1]; out[o+2]=src[p+2]; out[o+3]=src[p+3]; break;
+      case FMT.UVLX8888:
+        out[o]=src[p]; out[o+1]=src[p+1]; out[o+2]=src[p+2]; out[o+3]=src[p+3]; break;
+      case FMT.RGBA16161616F: {
+        for(let c = 0; c < 4; c++)
+          out[o+c] = clamp8(Math.round(h2f(src[p+c*2] | (src[p+c*2+1]<<8)) * 255));
+        break;
+      }
+      case FMT.RGBA16161616: {
+        for(let c = 0; c < 4; c++)
+          out[o+c] = (src[p+c*2+1] > 0) ? 255 : src[p+c*2];
+        break;
+      }
+      case FMT.P8: {
+        // [FIX] 0.3 调色板在全部图像数据之后，由调用方算好 paletteOff 传进来
+        const pi = (paletteOff >>> 0) + src[p]*4;
+        out[o]=src[pi+2]; out[o+1]=src[pi+1]; out[o+2]=src[pi]; out[o+3]=src[pi+3]; break;
+      }
+      default:
+        throw new Error('暂不支持解码的图像格式: ' + fmtName(fmt));
+    }
+  }
+}
+
+// 从 VTF 中取出一帧图像，返回 {data:Uint8ClampedArray, w, h, hd, palette}
+function vtfDecodeImage(buf, frame, mip, face){
+  const hd = parseVTFHeader(buf);
+  frame = frame || 0; mip = mip || 0; face = face || 0;
+  if(frame >= hd.frames) frame = 0;
+  if(mip >= hd.mipCount) mip = 0;
+  const faces = (hd.flags & FLAG.ENVMAP) ? 6 : 1;
+  if(face >= faces) face = 0;
+  const src = new Uint8Array(buf);
+  const dims = mipDims(hd.w, hd.h, mip);
+  const w = dims[0], h = dims[1];
+  const off = vtfImageOffset(hd, frame, face, 0, mip);
+  const need = mipSize(w, h, 1, hd.hiFmt);
+  if(off + need > src.length) throw new Error(
+    '数据区越界（需要 ' + (off+need) + ' 字节，文件仅 ' + src.length +
+    ' 字节），该文件可能已损坏或被截断');
+  const out = new Uint8ClampedArray(w*h*4);
+  let palette = null;
+  let palOff = 0;
+  if(hd.hiFmt === FMT.P8){
+    palOff = p8PaletteOffset(hd);
+    if(palOff + 1024 > src.length)
+      throw new Error('P8 调色板越界，文件可能已损坏');
+    palette = src.subarray(palOff, palOff + 1024);
+  }
+  if(isCompressed(hd.hiFmt)) decodeDXT(src, off, w, h, out, hd.hiFmt);
+  else decodeUncompressed(hd.hiFmt, src, off, w, h, out, palOff);
+  return { data: out, w: w, h: h, hd: hd, palette: palette };
+}
+
+// 列出全部 mip 级别的尺寸与字节数（详情面板用）
+function mipList(hd){
+  const list = [];
+  for(let i = 0; i < hd.mipCount; i++){
+    const d = mipDims(hd.w, hd.h, i);
+    list.push({ level:i, w:d[0], h:d[1], bytes:mipSize(d[0], d[1], 1, hd.hiFmt) });
+  }
+  return list;
+}
+
+/* ---------------------- 3. VTF 编码 ---------------------- */
+
+/* ---- 缩放 / mipmap 生成 ---- */
+
+// [PERF] 1.3 用 Uint32 一次读出 RGBA，再用位运算拆通道
+// [FEAT] 3.2.3 mip 过滤 box：2×2 均值（默认，最快）
+function resizeHalfBox(rgba, w, h){
+  const nw = Math.max(1, w >> 1), nh = Math.max(1, h >> 1);
+  const out = new Uint8ClampedArray(nw*nh*4);
+  if((rgba.byteOffset & 3) !== 0) rgba = rgba.slice();   // 兜底：非对齐视图先拷贝
+  const s32 = new Uint32Array(rgba.buffer, rgba.byteOffset, w*h);
+  const sx = w > 1 ? 2 : 1, sy = h > 1 ? 2 : 1;
+  for(let y = 0; y < nh; y++){
+    for(let x = 0; x < nw; x++){
+      let r=0,g=0,b=0,a=0,ws=0,cnt=0;
+      for(let dy = 0; dy < sy; dy++){
+        const row = (y*sy+dy)*w;
+        for(let dx = 0; dx < sx; dx++){
+          const v = s32[row + x*sx + dx];
+          const av = (v >>> 24);
+          r += (v & 255)*av; g += ((v >>> 8) & 255)*av; b += ((v >>> 16) & 255)*av;
+          a += av; ws += av; cnt++;
+        }
+      }
+      const o = (y*nw + x)*4;
+      out[o+3] = Math.round(a / cnt);
+      if(ws > 0){
+        out[o]   = clamp8(Math.round(r / ws));
+        out[o+1] = clamp8(Math.round(g / ws));
+        out[o+2] = clamp8(Math.round(b / ws));
+      }
+    }
+  }
+  return { data: out, w: nw, h: nh };
+}
+
+// triangle 滤波：3×3 tent 权重（1/2/1 × 1/2/1），比 box 更平滑
+const _tentW = [1,2,1, 2,4,2, 1,2,1];
+// [FEAT] 3.2.3 mip 过滤 triangle：3×3 帐篷权重（中心 4/16、边 2/16、角 1/16）
+function resizeHalfTriangle(rgba, w, h){
+  const nw = Math.max(1, w >> 1), nh = Math.max(1, h >> 1);
+  const out = new Uint8ClampedArray(nw*nh*4);
+  if((rgba.byteOffset & 3) !== 0) rgba = rgba.slice();
+  const s32 = new Uint32Array(rgba.buffer, rgba.byteOffset, w*h);
+  for(let y = 0; y < nh; y++){
+    for(let x = 0; x < nw; x++){
+      let r=0,g=0,b=0,a=0,ws=0,tw=0;
+      for(let ty = -1; ty <= 1; ty++){
+        let yy = (y*2) + ty;
+        if(yy < 0) yy = 0; else if(yy >= h) yy = h-1;
+        for(let tx = -1; tx <= 1; tx++){
+          let xx = (x*2) + tx;
+          if(xx < 0) xx = 0; else if(xx >= w) xx = w-1;
+          const wt = _tentW[(ty+1)*3 + (tx+1)];
+          const v = s32[yy*w + xx];
+          const av = (v >>> 24);
+          r += (v & 255)*av*wt; g += ((v >>> 8) & 255)*av*wt; b += ((v >>> 16) & 255)*av*wt;
+          a += av*wt; ws += av*wt; tw += wt;
+        }
+      }
+      const o = (y*nw + x)*4;
+      out[o+3] = Math.round(a / tw);
+      if(ws > 0){
+        out[o]   = clamp8(Math.round(r / ws));
+        out[o+1] = clamp8(Math.round(g / ws));
+        out[o+2] = clamp8(Math.round(b / ws));
+      }
+    }
+  }
+  return { data: out, w: nw, h: nh };
+}
+
+function resizeHalf(rgba, w, h, mode){
+  return (mode === 'triangle') ? resizeHalfTriangle(rgba, w, h) : resizeHalfBox(rgba, w, h);
+}
+
+// 双线性放大（NPOT 等比补边时会用到）
+function resizeBilinear(rgba, w, h, nw, nh){
+  const out = new Uint8ClampedArray(nw*nh*4);
+  const fx = w / nw, fy = h / nh;
+  for(let y = 0; y < nh; y++){
+    let sy = (y + 0.5) * fy - 0.5;
+    if(sy < 0) sy = 0;
+    let y0 = sy | 0, y1 = Math.min(h-1, y0+1), wy = sy - y0;
+    for(let x = 0; x < nw; x++){
+      let sx = (x + 0.5) * fx - 0.5;
+      if(sx < 0) sx = 0;
+      let x0 = sx | 0, x1 = Math.min(w-1, x0+1), wx = sx - x0;
+      const i00 = (y0*w + x0)*4, i01 = (y0*w + x1)*4;
+      const i10 = (y1*w + x0)*4, i11 = (y1*w + x1)*4;
+      const o = (y*nw + x)*4;
+      for(let c = 0; c < 4; c++){
+        const t = rgba[i00+c] + (rgba[i01+c] - rgba[i00+c])*wx;
+        const u = rgba[i10+c] + (rgba[i11+c] - rgba[i10+c])*wx;
+        out[o+c] = Math.round(t + (u - t)*wy);
+      }
+    }
+  }
+  return { data: out, w: nw, h: nh };
+}
+
+// [PERF] 1.3 每行的 y 范围只算一次，x0/x1 预计算成 Int32Array
+function scaleTo(rgba, w, h, nw, nh){
+  if(nw === w && nh === h) return { data: rgba, w: w, h: h };
+  if(nw > w && nh > h) return resizeBilinear(rgba, w, h, nw, nh);
+  const out = new Uint8ClampedArray(nw*nh*4);
+  const fx = w / nw, fy = h / nh;
+  const xs = new Int32Array(nw), xe = new Int32Array(nw);
+  for(let x = 0; x < nw; x++){
+    const x0 = Math.floor(x*fx);
+    xs[x] = x0;
+    xe[x] = Math.min(w, Math.max(x0+1, Math.floor((x+1)*fx)));
+  }
+  for(let y = 0; y < nh; y++){
+    const y0 = Math.floor(y*fy), y1 = Math.min(h, Math.max(y0+1, Math.floor((y+1)*fy)));
+    for(let x = 0; x < nw; x++){
+      const x0 = xs[x], x1 = xe[x];
+      let r=0,g=0,b=0,a=0,ws=0,cnt=0;
+      for(let yy = y0; yy < y1; yy++){
+        const row = yy*w;
+        for(let xx = x0; xx < x1; xx++){
+          const i = (row + xx)*4, av = rgba[i+3];
+          r += rgba[i]*av; g += rgba[i+1]*av; b += rgba[i+2]*av;
+          a += av; ws += av; cnt++;
+        }
+      }
+      const o = (y*nw + x)*4;
+      out[o+3] = Math.round(a / cnt);
+      if(ws > 0){
+        out[o]   = clamp8(Math.round(r / ws));
+        out[o+1] = clamp8(Math.round(g / ws));
+        out[o+2] = clamp8(Math.round(b / ws));
+      }
+    }
+  }
+  return { data: out, w: nw, h: nh };
+}
+
+function buildMipChain(rgba, w, h, filter){
+  const chain = [{ data: rgba, w: w, h: h }];
+  let cur = chain[0];
+  while((cur.w > 1 || cur.h > 1) && chain.length < 32){
+    cur = resizeHalf(cur.data, cur.w, cur.h, filter);
+    chain.push(cur);
+  }
+  return chain;   // chain[0] 为原图
+}
+
+// 居中裁切到最近的 2 次幂
+// [FEAT] 3.2.9 缩放模式 crop：居中裁切到最近的 2 次幂（不缩放，保持锐利）
+function cropToPow2(data, w, h){
+  const nw = Math.max(1, prevPow2(w)), nh = Math.max(1, prevPow2(h));
+  if(nw === w && nh === h) return { data: data, w: w, h: h };
+  const x0 = (w - nw) >> 1, y0 = (h - nh) >> 1;
+  const out = new Uint8ClampedArray(nw*nh*4);
+  for(let y = 0; y < nh; y++){
+    const s = ((y + y0)*w + x0) << 2;
+    out.set(data.subarray(s, s + nw*4), y*nw*4);
+  }
+  return { data: out, w: nw, h: nh };
+}
+
+// 等比缩放后补透明边到最近的 2 次幂
+// [FEAT] 3.2.9 缩放模式 pad：等比缩放到不超过目标，再补透明边到 2 次幂
+function padToPow2(data, w, h){
+  const tw = Math.max(1, nextPow2(w)), th = Math.max(1, nextPow2(h));
+  if(tw === w && th === h) return { data: data, w: w, h: h };
+  const s = Math.min(tw / w, th / h);
+  const rw = Math.max(1, Math.min(tw, Math.round(w * s)));
+  const rh = Math.max(1, Math.min(th, Math.round(h * s)));
+  const scaled = scaleTo(data, w, h, rw, rh);
+  const out = new Uint8ClampedArray(tw*th*4);   // 默认即全透明
+  const ox = (tw - rw) >> 1, oy = (th - rh) >> 1;
+  for(let y = 0; y < rh; y++){
+    const s2 = (y*rw) << 2;
+    out.set(scaled.data.subarray(s2, s2 + rw*4), ((y + oy)*tw + ox) << 2);
+  }
+  return { data: out, w: tw, h: th };
+}
+
+/* ---- DXT 压缩 ---- */
+
+// 提取 4x4 块（越界取边缘像素）
+const _blk = new Uint8Array(64);
+const _blk32 = new Uint32Array(_blk.buffer);
+function fetchBlock(rgba, w, h, bx, by, needClamp, src32){
+  // [PERF] 1.1 非边缘块直接整行 4 个 32 位字拷贝，跳过 Math.min 钳制与 subarray 分配
+  if(!needClamp && src32){
+    const y0 = by*4, x0 = bx*4;
+    for(let y = 0; y < 4; y++){
+      const s = (y0 + y)*w + x0, d = y << 2;
+      _blk32[d] = src32[s]; _blk32[d+1] = src32[s+1];
+      _blk32[d+2] = src32[s+2]; _blk32[d+3] = src32[s+3];
+    }
+    return _blk;
+  }
+  for(let y = 0; y < 4; y++){
+    const yy = Math.min(h-1, by*4 + y);
+    for(let x = 0; x < 4; x++){
+      const xx = Math.min(w-1, bx*4 + x);
+      const i = ((yy*w + xx) << 2), o = ((y*4 + x) << 2);
+      _blk[o]=rgba[i]; _blk[o+1]=rgba[i+1]; _blk[o+2]=rgba[i+2]; _blk[o+3]=rgba[i+3];
+    }
+  }
+  return _blk;
+}
+
+// 用幂迭代求颜色分布主轴（协方差矩阵最大特征向量）
+const _cov = new Float64Array(9);
+const _axis = { x:0.577, y:0.577, z:0.577, mr:0, mg:0, mb:0, sd:0 };
+function principalAxis(px, idx, n, iters){
+  let mr=0, mg=0, mb=0;
+  // [PERF] 1.1 无透明时 idx 是 0..15 的恒等序列，直接顺序遍历
+  if(n === 16){
+    for(let i = 0; i < 16; i++){
+      mr += px[i*4]; mg += px[i*4+1]; mb += px[i*4+2];
+    }
+  }else{
+    for(let k = 0; k < n; k++){
+      const i = idx[k];
+      mr += px[i*4]; mg += px[i*4+1]; mb += px[i*4+2];
+    }
+  }
+  mr/=n; mg/=n; mb/=n;
+  let c0=0,c1=0,c2=0,c3=0,c4=0,c5=0,c6=0,c7=0,c8=0;
+  if(n === 16){
+    for(let i = 0; i < 16; i++){
+      const dr=px[i*4]-mr, dg=px[i*4+1]-mg, db=px[i*4+2]-mb;
+      c0+=dr*dr; c1+=dr*dg; c2+=dr*db;
+      c3+=dg*dr; c4+=dg*dg; c5+=dg*db;
+      c6+=db*dr; c7+=db*dg; c8+=db*db;
+    }
+  }else{
+    for(let k = 0; k < n; k++){
+      const i = idx[k];
+      const dr=px[i*4]-mr, dg=px[i*4+1]-mg, db=px[i*4+2]-mb;
+      c0+=dr*dr; c1+=dr*dg; c2+=dr*db;
+      c3+=dg*dr; c4+=dg*dg; c5+=dg*db;
+      c6+=db*dr; c7+=db*dg; c8+=db*db;
+    }
+  }
+  _cov[0]=c0;_cov[1]=c1;_cov[2]=c2;_cov[3]=c3;_cov[4]=c4;
+  _cov[5]=c5;_cov[6]=c6;_cov[7]=c7;_cov[8]=c8;
+
+  let ax=1, ay=1, az=1;
+  const it = iters || 2;
+  for(let k = 0; k < it; k++){
+    const nx=c0*ax+c1*ay+c2*az;
+    const ny=c3*ax+c4*ay+c5*az;
+    const nz=c6*ax+c7*ay+c8*az;
+    const len=Math.sqrt(nx*nx+ny*ny+nz*nz);
+    if(len < 1e-8){ ax=ay=az=0.577; break; }
+    ax=nx/len; ay=ny/len; az=nz/len;
+  }
+  _axis.x=ax; _axis.y=ay; _axis.z=az;
+  _axis.mr=mr; _axis.mg=mg; _axis.mb=mb;
+  _axis.sd=(c0+c4+c8)/(3*n);     // 方差近似（协方差迹 / 像素数）
+  return _axis;
+}
+
+// 生成 DXT1 调色板 —— 完全复刻解码器行为：
+// c0 > c1 → 4 色不透明；c0 <= c1 → 3 色 + 索引 3 为透明黑
+const _pal = new Uint8Array(16);
+function buildPalette(c0, c1){
+  unpack565(c0, _pal, 0);
+  unpack565(c1, _pal, 4);
+  if(c0 > c1){
+    _pal[8]  = (2*_pal[0] + _pal[4] + 1) / 3;
+    _pal[9]  = (2*_pal[1] + _pal[5] + 1) / 3;
+    _pal[10] = (2*_pal[2] + _pal[6] + 1) / 3;
+    _pal[11] = 255;
+    _pal[12] = (_pal[0] + 2*_pal[4] + 1) / 3;
+    _pal[13] = (_pal[1] + 2*_pal[5] + 1) / 3;
+    _pal[14] = (_pal[2] + 2*_pal[6] + 1) / 3;
+    _pal[15] = 255;
+  }else{
+    _pal[8]  = (_pal[0] + _pal[4]) >> 1;
+    _pal[9]  = (_pal[1] + _pal[5]) >> 1;
+    _pal[10] = (_pal[2] + _pal[6]) >> 1;
+    _pal[11] = 255;
+    _pal[12] = _pal[13] = _pal[14] = _pal[15] = 0;
+  }
+}
+
+const _idxBuf = new Uint8Array(16);
+
+// 计算一组端点在块内的加权误差（不含写盘）
+// [FIX] 3.2.4 入参只需 maxIdx：hasTrans 已体现在 maxIdx（透明块为 2）里
+function evalEndpoints(px, idx, n, c0, c1, maxIdx){
+  buildPalette(c0, c1);
+  let err = 0;
+  for(let k = 0; k < n; k++){
+    const i = idx[k];
+    const r = px[i*4], g = px[i*4+1], b = px[i*4+2];
+    let best = 0, bd = 1e30;
+    for(let c = 0; c <= maxIdx; c++){
+      const dr = r - _pal[c*4], dg = g - _pal[c*4+1], db = b - _pal[c*4+2];
+      // [PERF] 1.1 2:4:1 整数权重，比 0.299/0.587/0.114 更快且更贴近人眼
+      const d = dr*dr*2 + dg*dg*4 + db*db;
+      if(d < bd){ bd = d; best = c; }
+    }
+    err += bd;
+  }
+  return err;
+}
+
+// 端点排序结果（模块级变量，避免每块分配闭包）
+let _ordC0 = 0, _ordC1 = 0, _ordMax = 3;
+function orderEndpoints(a, b, hasTrans){
+  if(hasTrans){
+    _ordC0 = a < b ? a : b;
+    _ordC1 = a < b ? b : a;
+    _ordMax = 2;                       // c0 <= c1 → 3 色 + 索引 3 透明
+  }else{
+    _ordC0 = a > b ? a : b;
+    _ordC1 = a > b ? b : a;
+    _ordMax = (_ordC0 > _ordC1) ? 3 : 2;   // 端点相同时索引 3 会变透明，禁用
+  }
+}
+
+// 由给定端点写出块：建调色板 → 逐像素选最近色 → 写 8 字节
+function finishDXT1Block(px, dst, do_, hasTrans, c0, c1, maxIdx){
+  buildPalette(c0, c1);
+  // [PERF] 1.1 调色板搬到局部变量，索引搜索里不再做 TypedArray 寻址
+  const pr0 = _pal[0], pg0 = _pal[1], pb0 = _pal[2];
+  const pr1 = _pal[4], pg1 = _pal[5], pb1 = _pal[6];
+  const pr2 = _pal[8], pg2 = _pal[9], pb2 = _pal[10];
+  const pr3 = _pal[12], pg3 = _pal[13], pb3 = _pal[14];
+  let bits = 0;
+  for(let i = 0; i < 16; i++){
+    if(hasTrans && px[i*4+3] < 128){ bits |= 3 << (i*2); continue; }
+    const r = px[i*4], g = px[i*4+1], b = px[i*4+2];
+    // [PERF] 1.1 2:4:1 整数权重，比 0.299/0.587/0.114 更快且更贴近人眼
+    let dr = r - pr0, dg = g - pg0, db = b - pb0;
+    let bd = dr*dr*2 + dg*dg*4 + db*db, best = 0;
+    dr = r - pr1; dg = g - pg1; db = b - pb1;
+    let d = dr*dr*2 + dg*dg*4 + db*db;
+    if(d < bd){ bd = d; best = 1; }
+    if(maxIdx >= 2){
+      dr = r - pr2; dg = g - pg2; db = b - pb2;
+      d = dr*dr*2 + dg*dg*4 + db*db;
+      if(d < bd){ bd = d; best = 2; }
+    }
+    if(maxIdx >= 3){
+      dr = r - pr3; dg = g - pg3; db = b - pb3;
+      d = dr*dr*2 + dg*dg*4 + db*db;
+      if(d < bd){ bd = d; best = 3; }
+    }
+    bits |= best << (i*2);
+  }
+
+  // [PERF] 1.1 4 字节对齐时用 Uint32 写块头，少 4 次字节写
+  if((do_ & 3) === 0 && do_ + 8 <= dst.length && (dst.byteOffset & 3) === 0){
+    let u32 = dst._u32;
+    if(!u32){
+      u32 = new Uint32Array(dst.buffer, dst.byteOffset, dst.length >> 2);
+      dst._u32 = u32;
+    }
+    const k = do_ >> 2;
+    if(k + 1 < u32.length){
+      u32[k]   = (c0 & 0xFFFF) | ((c1 & 0xFFFF) << 16);
+      u32[k+1] = bits >>> 0;
+      return;
+    }
+  }
+  dst[do_]   = c0 & 0xFF; dst[do_+1] = (c0 >> 8) & 0xFF;
+  dst[do_+2] = c1 & 0xFF; dst[do_+3] = (c1 >> 8) & 0xFF;
+  bits = bits >>> 0;
+  dst[do_+4] = bits & 0xFF;          dst[do_+5] = (bits >>> 8) & 0xFF;
+  dst[do_+6] = (bits >>> 16) & 0xFF; dst[do_+7] = (bits >>> 24) & 0xFF;
+}
+
+// 压缩一个 DXT1 块；返回该块是否含透明像素
+function compressDXT1BlockRaw(px, dst, do_, quality){
+  let hasTrans = false;
+  for(let i = 0; i < 16; i++) if(px[i*4+3] < 128){ hasTrans = true; break; }
+
+  const idx = _idxBuf;
+  let n = 0;
+  if(hasTrans){
+    for(let i = 0; i < 16; i++) if(px[i*4+3] >= 128) idx[n++] = i;
+  }else{
+    for(let i = 0; i < 16; i++) idx[i] = i;
+    n = 16;
+  }
+
+  if(n === 0){                       // 整块全透明
+    dst[do_]=dst[do_+1]=dst[do_+2]=dst[do_+3]=0;
+    dst[do_+4]=dst[do_+5]=dst[do_+6]=dst[do_+7]=0xFF;   // 索引全 3
+    return true;
+  }
+
+  const q = quality || 'normal';
+
+  // [PERF] 3.2.4 fast 档：跳过 PCA，用 RGB 包围盒对角线当端点，单趟扫描即可
+  if(q === 'fast'){
+    let mnr = 255, mng = 255, mnb = 255, mxr = 0, mxg = 0, mxb = 0;
+    for(let k = 0; k < n; k++){
+      const i = idx[k];
+      const r = px[i*4], g = px[i*4+1], b = px[i*4+2];
+      if(r < mnr) mnr = r;
+      if(r > mxr) mxr = r;
+      if(g < mng) mng = g;
+      if(g > mxg) mxg = g;
+      if(b < mnb) mnb = b;
+      if(b > mxb) mxb = b;
+    }
+    orderEndpoints(rgb565(mnr, mng, mnb), rgb565(mxr, mxg, mxb), hasTrans);
+    finishDXT1Block(px, dst, do_, hasTrans, _ordC0, _ordC1, _ordMax);
+    return hasTrans;
+  }
+
+  const ax = principalAxis(px, idx, n, 2);
+
+  // [PERF] 1.1 方差极小时主轴退化为噪声，补几次迭代
+  if(ax.sd < 1e-4) principalAxis(px, idx, n, 6);
+  const A = _axis;
+
+  let tmin = 1e30, tmax = -1e30, mini = idx[0], maxi = idx[0];
+  for(let k = 0; k < n; k++){
+    const i = idx[k];
+    const t = px[i*4]*A.x + px[i*4+1]*A.y + px[i*4+2]*A.z;
+    if(t < tmin){ tmin = t; mini = i; }
+    if(t > tmax){ tmax = t; maxi = i; }
+  }
+
+  // 候选端点：主轴上极值像素 / 均值±σ / 25%-75% 分位
+  orderEndpoints(rgb565(px[mini*4], px[mini*4+1], px[mini*4+2]),
+                 rgb565(px[maxi*4], px[maxi*4+1], px[maxi*4+2]), hasTrans);
+
+  if(q === 'high'){
+    const meanT = A.mr*A.x + A.mg*A.y + A.mb*A.z;
+    const sd = Math.sqrt(A.sd);
+    const span = tmax - tmin;
+    const t25 = tmin + span*0.25, t75 = tmin + span*0.75;
+    const c0s = [rgb565(px[mini*4], px[mini*4+1], px[mini*4+2]),
+                 rgb565(clamp8(Math.round(A.mr - A.x*sd)), clamp8(Math.round(A.mg - A.y*sd)), clamp8(Math.round(A.mb - A.z*sd))),
+                 rgb565(clamp8(Math.round(A.mr + A.x*(t25-meanT))), clamp8(Math.round(A.mg + A.y*(t25-meanT))), clamp8(Math.round(A.mb + A.z*(t25-meanT)))),
+                 rgb565(clamp8(Math.round(A.mr + A.x*(span*0.125))), clamp8(Math.round(A.mg + A.y*(span*0.125))), clamp8(Math.round(A.mb + A.z*(span*0.125))))];
+    const c1s = [rgb565(px[maxi*4], px[maxi*4+1], px[maxi*4+2]),
+                 rgb565(clamp8(Math.round(A.mr + A.x*sd)), clamp8(Math.round(A.mg + A.y*sd)), clamp8(Math.round(A.mb + A.z*sd))),
+                 rgb565(clamp8(Math.round(A.mr + A.x*(t75-meanT))), clamp8(Math.round(A.mg + A.y*(t75-meanT))), clamp8(Math.round(A.mb + A.z*(t75-meanT)))),
+                 rgb565(clamp8(Math.round(A.mr - A.x*(span*0.125))), clamp8(Math.round(A.mg - A.y*(span*0.125))), clamp8(Math.round(A.mb - A.z*(span*0.125))))];
+    let bestErr = 1e30, bc0 = _ordC0, bc1 = _ordC1, bMax = _ordMax;
+    for(let ci = 0; ci < 4; ci++){
+      orderEndpoints(c0s[ci], c1s[ci], hasTrans);
+      const e = evalEndpoints(px, idx, n, _ordC0, _ordC1, _ordMax);
+      if(e < bestErr){ bestErr = e; bc0 = _ordC0; bc1 = _ordC1; bMax = _ordMax; }
+    }
+    _ordC0 = bc0; _ordC1 = bc1; _ordMax = bMax;
+  }
+
+  finishDXT1Block(px, dst, do_, hasTrans, _ordC0, _ordC1, _ordMax);
+  return hasTrans;
+}
+
+// DXT5 alpha 块（返回是否用了 8 级插值模式）
+function compressDXT5AlphaBlock(px, dst, do_){
+  let mn = 255, mx = 0;
+  for(let i = 0; i < 16; i++){
+    const a = px[i*4+3];
+    if(a < mn) mn = a;
+    if(a > mx) mx = a;
+  }
+  const table = new Uint8Array(8);
+  let a0, a1;
+  if(mx - mn <= 8){
+    // [FIX] 0.1 必须保证 a0 ≤ a1，解码器只有 a0 ≤ a1 才走「6 级插值 + 0/255 端点」
+    a0 = mn; a1 = mx;
+    table[0]=a0; table[1]=a1;
+    for(let i = 1; i < 5; i++) table[i+1] = ((5-i)*a0 + i*a1 + 2) / 5;
+    table[6]=0; table[7]=255;
+  }else{
+    a0 = mx; a1 = mn;
+    table[0]=a0; table[1]=a1;
+    for(let i = 1; i < 7; i++) table[i+1] = ((7-i)*a0 + i*a1 + 3) / 7;
+  }
+  dst[do_]=a0; dst[do_+1]=a1;
+  // 索引区必须从 0 开始做 OR，先清 6 个字节
+  for(let i = 2; i < 8; i++) dst[do_+i] = 0;
+  for(let i = 0; i < 16; i++){
+    const a = px[i*4+3];
+    let best = 0, bd = 1e30;
+    for(let c = 0; c < 8; c++){
+      const d = Math.abs(table[c] - a);
+      if(d < bd){ bd = d; best = c; }
+    }
+    const bitPos = i*3;
+    if(best & 1) dst[do_ + 2 + (bitPos >> 3)] |= 1 << (bitPos & 7);
+    if(best & 2) dst[do_ + 2 + ((bitPos+1) >> 3)] |= 1 << ((bitPos+1) & 7);
+    if(best & 4) dst[do_ + 2 + ((bitPos+2) >> 3)] |= 1 << ((bitPos+2) & 7);
+  }
+  return mx - mn > 8;
+}
+
+/* 按行段压缩，便于在 Worker 里分段让出事件循环 */
+function compressDXT1Band(rgba, w, h, dst, dOff, quality, by0, by1, st, src32){
+  const bw = (w+3)>>2, bh = (h+3)>>2;
+  for(let by = by0; by < by1; by++){
+    const clampY = (by*4 + 3) >= h;
+    for(let bx = 0; bx < bw; bx++){
+      const clampX = (bx*4 + 3) >= w;
+      const px = fetchBlock(rgba, w, h, bx, by, clampX || clampY, src32);
+      if(compressDXT1BlockRaw(px, dst, dOff + (by*bw + bx)*8, quality)) st.oneBitAlpha = true;
+    }
+  }
+}
+
+function compressDXT5Band(rgba, w, h, dst, dOff, quality, by0, by1, st, src32){
+  const bw = (w+3)>>2, bh = (h+3)>>2;
+  for(let by = by0; by < by1; by++){
+    const clampY = (by*4 + 3) >= h;
+    for(let bx = 0; bx < bw; bx++){
+      const base = dOff + (by*bw + bx)*16;
+      const clampX = (bx*4 + 3) >= w;
+      const px = fetchBlock(rgba, w, h, bx, by, clampX || clampY, src32);
+      // 必须立刻复制：_blk 是共享缓冲，下一次 fetchBlock 会覆盖它
+      const pxCopy = new Uint8Array(64);
+      pxCopy.set(px);
+      for(let i = 0; i < 8; i++) dst[base+i] = 0;
+      compressDXT5AlphaBlock(pxCopy, dst, base);
+      // 颜色块（后 8 字节）：DXT5 的颜色部分按不透明处理
+      for(let i = 0; i < 16; i++) pxCopy[i*4+3] = 255;
+      compressDXT1BlockRaw(pxCopy, dst, base + 8, quality);
+    }
+  }
+}
+
+function compressDXT3Band(rgba, w, h, dst, dOff, quality, by0, by1, st, src32){
+  const bw = (w+3)>>2, bh = (h+3)>>2;
+  for(let by = by0; by < by1; by++){
+    const clampY = (by*4 + 3) >= h;
+    for(let bx = 0; bx < bw; bx++){
+      const base = dOff + (by*bw + bx)*16;
+      const clampX = (bx*4 + 3) >= w;
+      const px = fetchBlock(rgba, w, h, bx, by, clampX || clampY, src32);
+      for(let i = 0; i < 16; i++) dst[base+i] = 0;
+      // 4 位显式 alpha
+      for(let y = 0; y < 4; y++){
+        let v = 0;
+        for(let x = 0; x < 4; x++) v |= (px[(y*4+x)*4+3] >> 4) << (x*4);
+        dst[base + y*2]     = v & 0xFF;
+        dst[base + y*2 + 1] = (v >> 8) & 0xFF;
+      }
+      const opaque = new Uint8Array(64);
+      opaque.set(px);
+      for(let i = 0; i < 16; i++) opaque[i*4+3] = 255;
+      compressDXT1BlockRaw(opaque, dst, base + 8, quality);
+    }
+  }
+}
+
+/* ---- 未压缩格式写入 ---- */
+
+// 32 位格式整像素写入（[PERF] 1.2）
+function encodeUncompressed32(fmt, rgba, n, dst, dOff){
+  const s32 = new Uint32Array(rgba.buffer, rgba.byteOffset, n);
+  const o32 = new Uint32Array(dst.buffer, dst.byteOffset + dOff, n);
+  let i, v;
+  switch(fmt){
+    case FMT.RGBA8888:
+      o32.set(s32); return true;
+    case FMT.BGRA8888:
+      for(i = 0; i < n; i++){
+        v = s32[i];
+        o32[i] = ((v & 255) << 16) | (v & 0xFF00) | ((v >>> 16) & 255) | (v & 0xFF000000);
+      }
+      return true;
+    case FMT.BGRX8888:
+      for(i = 0; i < n; i++){
+        v = s32[i];
+        o32[i] = ((v & 255) << 16) | (v & 0xFF00) | ((v >>> 16) & 255) | 0xFF000000;
+      }
+      return true;
+    case FMT.ABGR8888:
+      for(i = 0; i < n; i++){
+        v = s32[i];
+        o32[i] = (v >>> 24) | ((v >>> 8) & 0xFF00) | ((v << 8) & 0xFF0000) | ((v & 255) << 24);
+      }
+      return true;
+    case FMT.ARGB8888:
+      for(i = 0; i < n; i++){
+        v = s32[i];
+        o32[i] = (v >>> 24) | ((v << 8) & 0xFF00) | ((v << 8) & 0xFF0000) | (((v >>> 16) & 255) << 24);
+      }
+      return true;
+  }
+  return false;
+}
+
+function encodeUncompressed(fmt, rgba, w, h, dst, dOff){
+  const n = w*h;
+
+  const is32 = fmt===FMT.RGBA8888 || fmt===FMT.ABGR8888 || fmt===FMT.ARGB8888 ||
+               fmt===FMT.BGRA8888 || fmt===FMT.BGRX8888;
+  if(is32 && LE && (dOff & 3) === 0 && ((dst.byteOffset + dOff) & 3) === 0 &&
+     ((rgba.byteOffset) & 3) === 0 && ((dst.byteLength) & 3) === 0){
+    if(encodeUncompressed32(fmt, rgba, n, dst, dOff)) return;
+  }
+
+  const bpp = FMT_INFO[fmt] ? (FMT_INFO[fmt].bpp >> 3) : 4;
+  let o = dOff;
+  for(let i = 0; i < n; i++, o += bpp){
+    const s = i*4;
+    const r = rgba[s], g = rgba[s+1], b = rgba[s+2], a = rgba[s+3];
+    switch(fmt){
+      case FMT.RGBA8888: dst[o]=r; dst[o+1]=g; dst[o+2]=b; dst[o+3]=a; break;
+      case FMT.BGRA8888: dst[o]=b; dst[o+1]=g; dst[o+2]=r; dst[o+3]=a; break;
+      case FMT.ABGR8888: dst[o]=a; dst[o+1]=b; dst[o+2]=g; dst[o+3]=r; break;
+      case FMT.ARGB8888: dst[o]=a; dst[o+1]=r; dst[o+2]=g; dst[o+3]=b; break;
+      case FMT.BGR888:   dst[o]=b; dst[o+1]=g; dst[o+2]=r; break;
+      case FMT.RGB888:   dst[o]=r; dst[o+1]=g; dst[o+2]=b; break;
+      case FMT.BGRX8888: dst[o]=b; dst[o+1]=g; dst[o+2]=r; dst[o+3]=255; break;
+      // [FEAT] 3.2.8 新增三种低成本格式
+      case FMT.I8:
+        dst[o] = (r*77 + g*150 + b*29) >> 8; break;
+      case FMT.A8:
+        dst[o] = a; break;
+      case FMT.IA88:
+        dst[o] = (r*77 + g*150 + b*29) >> 8; dst[o+1] = a; break;
+      default: throw new Error('暂不支持写出的格式: ' + fmtName(fmt));
+    }
+  }
+}
+
+/* ---- 智能格式判定 / 预乘 ---- */
+// [FEAT] 3.2.2 智能格式：全 255 → DXT1；仅 0/255 → DXT1(1bit)；含中间值 → DXT5
+// [FEAT] 3.2.2 智能格式 auto：全不透明 → DXT1；仅 0/255 的 alpha → DXT1(1bit)；其余 → DXT5
+function detectFormat(rgba, n){
+  let anyTrans = false, anyMid = false;
+  for(let i = 0; i < n; i++){
+    const a = rgba[(i<<2)+3];
+    if(a !== 255){
+      anyTrans = true;
+      if(a !== 0){ anyMid = true; break; }
+    }
+  }
+  if(anyMid) return { fmt:FMT.DXT5, kind:'gradient' };
+  if(anyTrans) return { fmt:FMT.DXT1, kind:'binary' };
+  return { fmt:FMT.DXT1, kind:'none' };
+}
+
+// [FEAT] 3.2.7 预乘 Alpha（Source 的 DXT 采样按预乘解释，半透明边缘才不会发黑边）
+function premultiplyCopy(rgba, n){
+  const out = new Uint8ClampedArray(rgba.length);
+  for(let i = 0; i < n; i++){
+    const o = i<<2, a = rgba[o+3];
+    out[o]   = (rgba[o]   * a + 127) / 255;
+    out[o+1] = (rgba[o+1] * a + 127) / 255;
+    out[o+2] = (rgba[o+2] * a + 127) / 255;
+    out[o+3] = a;
+  }
+  return out;
+}
+
+/* ---- 组装 VTF 文件 ---- */
+
+// hooks: { tick: async (p) => void } —— 每个批次汇报进度并让出事件循环
+async function buildVTF(rgba, w, h, opt, hooks){
+  opt = opt || {};
+  hooks = hooks || {};
+  const tick = hooks.tick;
+
+  // [FEAT] 1.5 大图保护
+  if(w * h > 8192 * 8192)
+    throw new Error('图像过大（> 8192×8192），已拒绝处理以免浏览器崩溃');
+
+  let fmt = opt.format;
+  let autoNote = null;
+  if(fmt === 'auto' || fmt === -1){
+    const d = detectFormat(rgba, w*h);
+    fmt = d.fmt;
+    autoNote = '智能选择：' + (d.kind === 'gradient' ? '检测到半透明像素 → DXT5'
+              : d.kind === 'binary' ? '仅有 0/255 Alpha → DXT1（1bit）'
+              : '无透明像素 → DXT1');
+  }
+  const fi = FMT_INFO[fmt];
+  if(!fi) throw new Error('不支持的输出格式: ' + fmt);
+  const genMip = !!opt.mipmap;
+  const genLow = !!opt.lowRes;
+  const quality = opt.quality || 'normal';
+  const filter = opt.filter || 'box';
+
+  let src = rgba;
+  if(opt.premult) src = premultiplyCopy(rgba, w*h);
+
+  // mip 链：chain[0] 是全尺寸
+  const chain = genMip ? buildMipChain(src, w, h, filter) : [{ data: src, w: w, h: h }];
+  const mipCount = chain.length;
+  const depth = 1, frames = 1;
+
+  // 缩略图尺寸：1/16，最小 1×1；[FIX] 头上 loW/loH 只有 1 字节，4096>>4=256 会溢出，这里封顶 128
+  let loW = Math.max(1, Math.min(128, w >> 4)), loH = Math.max(1, Math.min(128, h >> 4));
+  let lowData = null;
+  if(genLow){
+    const scaled = scaleTo(src, w, h, loW, loH);
+    lowData = new Uint8Array(mipSize(loW, loH, 1, fmt));
+    if(fi.blk){
+      const st = { oneBitAlpha:false };
+      const ls32 = ((scaled.data.byteOffset & 3) === 0)
+        ? new Uint32Array(scaled.data.buffer, scaled.data.byteOffset, loW * loH) : null;
+      if(fmt === FMT.DXT1) compressDXT1Band(scaled.data, loW, loH, lowData, 0, quality, 0, (loH+3)>>2, st, ls32);
+      else if(fmt === FMT.DXT5) compressDXT5Band(scaled.data, loW, loH, lowData, 0, quality, 0, (loH+3)>>2, st, ls32);
+      else compressDXT3Band(scaled.data, loW, loH, lowData, 0, quality, 0, (loH+3)>>2, st, ls32);
+    }else{
+      encodeUncompressed(fmt, scaled.data, loW, loH, lowData, 0);
+    }
+  }
+
+  // 计算总大小
+  let hiTotal = 0;
+  const mipSizes = [], mipOffs = [];
+  for(let i = 0; i < mipCount; i++){
+    const d = chain[i];
+    mipSizes.push(mipSize(d.w, d.h, 1, fmt));
+  }
+  // 写入顺序：mip 由小到大
+  for(let i = mipCount - 1; i >= 0; i--){
+    mipOffs[i] = hiTotal;
+    hiTotal += mipSizes[i];
+  }
+
+  const headerSize = 80;
+  const lowSize = lowData ? lowData.length : 0;
+  const total = headerSize + lowSize + hiTotal;
+
+  const buf = new ArrayBuffer(total);
+  const out = new Uint8Array(buf);
+  const dv = new DataView(buf);
+
+  // --- header ---
+  out[0]=0x56; out[1]=0x54; out[2]=0x46; out[3]=0x00;   // "VTF\0"
+  dv.setInt32(4,  7, true);          // version major
+  dv.setInt32(8,  2, true);          // version minor
+  dv.setInt32(12, headerSize, true);
+  dv.setUint16(16, w, true);
+  dv.setUint16(18, h, true);
+
+  // [FEAT] 3.2.1 允许调用方覆盖 flags / reflectivity / bumpScale
+  let flags = (typeof opt.flags === 'number' && isFinite(opt.flags))
+    ? (opt.flags >>> 0)
+    : (FLAG.CLAMPS | FLAG.CLAMPT);
+  if(fmt === FMT.DXT5) flags |= FLAG.EIGHTBITALPHA; else flags &= ~FLAG.EIGHTBITALPHA;
+  if(opt.srgb) flags |= FLAG.SRGB; else flags &= ~FLAG.SRGB;
+  if(!genMip) flags |= FLAG.NOMIP; else flags &= ~FLAG.NOMIP;
+  dv.setUint32(20, flags, true);
+  dv.setUint16(24, frames, true);
+  dv.setUint16(26, 0, true);         // firstFrame
+  // 28: padding0
+  const rf = (opt.reflect && opt.reflect.length === 3) ? opt.reflect : [1,1,1];
+  dv.setFloat32(32, rf[0], true);    // reflectivity RGB
+  dv.setFloat32(36, rf[1], true);
+  dv.setFloat32(40, rf[2], true);
+  // 44: padding1
+  const bs = (typeof opt.bumpScale === 'number' && isFinite(opt.bumpScale)) ? opt.bumpScale : 1;
+  dv.setFloat32(48, bs, true);       // bumpScale
+  dv.setInt32(52, fmt, true);
+  dv.setUint8(56, mipCount);
+  dv.setInt32(57, genLow ? fmt : FMT.NONE, true);
+  dv.setUint8(61, genLow ? loW : 0);
+  dv.setUint8(62, genLow ? loH : 0);
+  dv.setUint16(63, depth, true);     // 7.2+
+
+  // --- 缩略图 ---
+  if(lowData) out.set(lowData, headerSize);
+
+  // --- 主图像：mip 由小到大 ---
+  const st = { oneBitAlpha:false };
+  const hiBase = headerSize + lowSize;
+  const workTotal = hiTotal + lowSize;
+  let doneBytes = lowSize;
+  const bandBlocks = 16384;          // 每批约 16384 个块，兼顾进度粒度与让出开销
+
+  for(let i = mipCount - 1; i >= 0; i--){
+    const d = chain[i];
+    const at = hiBase + mipOffs[i];
+    if(fi.blk){
+      const bw = (d.w + 3) >> 2, bh = (d.h + 3) >> 2;
+      const band = Math.max(1, Math.floor(bandBlocks / Math.max(1, bw)));
+      const src32 = ((d.data.byteOffset & 3) === 0)
+        ? new Uint32Array(d.data.buffer, d.data.byteOffset, d.w * d.h) : null;
+      for(let by0 = 0; by0 < bh; by0 += band){
+        const by1 = Math.min(bh, by0 + band);
+        if(fmt === FMT.DXT1) compressDXT1Band(d.data, d.w, d.h, out, at, quality, by0, by1, st, src32);
+        else if(fmt === FMT.DXT5) compressDXT5Band(d.data, d.w, d.h, out, at, quality, by0, by1, st, src32);
+        else compressDXT3Band(d.data, d.w, d.h, out, at, quality, by0, by1, st, src32);
+        if(tick){
+          doneBytes += Math.round(mipSizes[i] * (by1 / bh));
+          await tick(Math.min(1, doneBytes / Math.max(1, workTotal)));
+        }
+      }
+    }else{
+      encodeUncompressed(fmt, d.data, d.w, d.h, out, at);
+      doneBytes += mipSizes[i];
+      if(tick) await tick(Math.min(1, doneBytes / Math.max(1, workTotal)));
+    }
+  }
+
+  // [FIX] 0.2 ONEBITALPHA 必须回写到 flags，保证返回值与文件头一致
+  if(fmt === FMT.DXT1 && st.oneBitAlpha) flags |= FLAG.ONEBITALPHA;
+  dv.setUint32(20, flags, true);
+
+  return { buf: buf, w: w, h: h, fmt: fmt, mipCount: mipCount, flags: flags,
+           size: total, oneBitAlpha: st.oneBitAlpha, autoNote: autoNote };
+}
+
+/* ---------------------- 4. 对外渲染入口（主线程 / Worker 共用） ---------------------- */
+
+// 非 2 次幂处理：scale=拉伸到最近 2 次幂 / crop=居中裁切 / pad=等比缩放后补透明边
+function prepareImage(rgba, w, h, mode){
+  if(mode === 'crop'){
+    const r = cropToPow2(rgba, w, h);
+    return { data:r.data, w:r.w, h:r.h,
+             note:'源尺寸 ' + w + '×' + h + ' 非 2 次幂，已居中裁切为 ' + r.w + '×' + r.h };
+  }
+  if(mode === 'pad'){
+    const r = padToPow2(rgba, w, h);
+    return { data:r.data, w:r.w, h:r.h,
+             note:'源尺寸 ' + w + '×' + h + ' 非 2 次幂，已等比缩放并补透明边为 ' + r.w + '×' + r.h };
+  }
+  // scale（默认）
+  if(isPow2(w) && isPow2(h)) return { data:rgba, w:w, h:h, note:null };
+  const nw = w <= 1 ? 1 : ((w / prevPow2(w) < nextPow2(w) / w) ? prevPow2(w) : nextPow2(w));
+  const nh = h <= 1 ? 1 : ((h / prevPow2(h) < nextPow2(h) / h) ? prevPow2(h) : nextPow2(h));
+  const r = scaleTo(rgba, w, h, nw, nh);
+  return { data:r.data, w:nw, h:nh,
+           note:'源尺寸 ' + w + '×' + h + ' 非 2 次幂，已缩放为 ' + nw + '×' + nh };
+}
+
+function thumbnailOf(data, w, h, max){
+  const s = Math.min(1, max / Math.max(w, h));
+  if(s >= 1) return { data:data, w:w, h:h };
+  const nw = Math.max(1, Math.round(w*s)), nh = Math.max(1, Math.round(h*s));
+  return scaleTo(data, w, h, nw, nh);
+}
+
+// 图片 → VTF 全流程（含 NPOT 处理与缩略图）
+async function renderIMG2VTF(rgba, w, h, opt, hooks){
+  opt = opt || {};
+  if(w * h > 8192 * 8192)
+    throw new Error('图像过大（> 8192×8192），已拒绝处理以免浏览器崩溃');
+
+  const notes = [];
+  if(!opt.npot || opt.npot === 'keep'){
+    if(!isPow2(w) || !isPow2(h))
+      notes.push('尺寸非 2 次幂，部分 Source 引擎可能无法正常加载');
+  }else{
+    const p = prepareImage(rgba, w, h, opt.npot);
+    if(!p.data) throw new Error('缩放失败');
+    if(p.w !== w || p.h !== h){
+      notes.push(p.note);
+      rgba = p.data; w = p.w; h = p.h;
+    }
+  }
+
+  // [FIX] 0.5 NPOT + keep + mipmap 互斥：引擎对 NPOT 的 mip 支持不一致，强制关掉
+  let mipmap = !!opt.mipmap;
+  if((!isPow2(w) || !isPow2(h)) && mipmap){
+    mipmap = false;
+    notes.push('非 2 次幂已自动关闭 mipmap（引擎对 NPOT mip 支持不一致）');
+  }
+
+  const o = {};
+  for(const k in opt) o[k] = opt[k];
+  o.mipmap = mipmap;
+
+  const built = await buildVTF(rgba, w, h, o, hooks);
+  if(built.autoNote) notes.push(built.autoNote);
+  if(opt.premult) notes.push('已按 Alpha 预乘 RGB（避免 DXT 边缘发白）');
+
+  const th = thumbnailOf(rgba, w, h, 128);
+  built.thumb = th.data;
+  built.thumbW = th.w;
+  built.thumbH = th.h;
+  built.notes = notes;
+  built.srcW = opt.srcW || w;
+  built.srcH = opt.srcH || h;
+  return built;
+}
+
+// VTF → RGBA（maxSize 时自动挑一个不超过该尺寸的 mip）
+function renderVTF2PNG(buf, frame, mip, face, maxSize){
+  const hd = parseVTFHeader(buf);
+  let lv = mip || 0;
+  if(maxSize){
+    lv = 0;
+    while(lv + 1 < hd.mipCount){
+      const d = mipDims(hd.w, hd.h, lv);
+      if(Math.max(d[0], d[1]) <= maxSize) break;
+      lv++;
+    }
+  }
+  const r = vtfDecodeImage(buf, frame || 0, lv, face || 0);
+  r.level = lv;
+  return r;
+}
+
+</script>
+
+<script type="text/plain" id="vtf-worker">
+/* =========================================================================
+ *  Worker 引导段  ——  与引擎源码拼接后通过 Blob 运行
+ *  只做「消息收发 + 取消标志」，所有计算复用引擎函数
+ * ======================================================================= */
+
+var __ABORT = Object.create(null);
+
+// [PERF] 用 MessageChannel 让出事件循环：setTimeout(0) 会被浏览器钳到 4ms，
+// 大批次累积起来会白白多花 1 秒以上
+var __ch = new MessageChannel();
+var __rq = [];
+__ch.port1.onmessage = function(){
+  var r = __rq.shift();
+  if(r) r();
+};
+function __yield(){
+  return new Promise(function(res){
+    __rq.push(res);
+    __ch.port2.postMessage(0);
+  });
+}
+
+self.onmessage = function(ev){
+  var m = ev.data;
+  if(!m || !m.type) return;
+  if(m.type === 'abort'){ __ABORT[m.id] = 1; return; }
+  if(m.type === 'vtf2png') __doDecode(m);
+  else if(m.type === 'img2vtf') __doEncode(m);
+};
+
+function __doDecode(m){
+  try{
+    var r = renderVTF2PNG(m.buf, m.frame || 0, m.mip || 0, m.face || 0, m.maxSize || 0);
+    var tr = [r.data.buffer];
+    var pal = null;
+    if(r.palette){ pal = r.palette.slice().buffer; tr.push(pal); }
+    self.postMessage({
+      type:'done', id:m.id, rgba:r.data.buffer, w:r.w, h:r.h,
+      hd:r.hd, level:r.level, palette:pal
+    }, tr);
+  }catch(e){
+    self.postMessage({ type:'error', id:m.id,
+      message:(e && e.message) || String(e), aborted:false });
+  }
+}
+
+async function __doEncode(m){
+  var id = m.id, last = 0;
+  var hooks = {
+    tick: async function(p){
+      if(__ABORT[id]){
+        var err = new Error('已取消');
+        err.name = 'AbortError';
+        throw err;
+      }
+      var now = Date.now();
+      if(now - last > 60 || p >= 1){
+        last = now;
+        self.postMessage({ type:'progress', id:id, p:p });
+      }
+      // 让出事件循环，abort 消息才有机会被处理
+      await __yield();
+    }
+  };
+  try{
+    var opt = m.opt || {};
+    var t0 = Date.now();
+    var out = await renderIMG2VTF(new Uint8ClampedArray(m.rgba), m.w, m.h, opt, hooks);
+    out.ms = Date.now() - t0;
+    self.postMessage({
+      type:'done', id:id, buf:out.buf, w:out.w, h:out.h, srcW:m.w, srcH:m.h,
+      fmt:out.fmt, mipCount:out.mipCount, flags:out.flags, size:out.size,
+      oneBitAlpha:out.oneBitAlpha, notes:out.notes,
+      thumb:out.thumb.buffer, tw:out.thumbW, th:out.thumbH, ms:out.ms
+    }, [out.buf, out.thumb.buffer]);
+  }catch(e){
+    self.postMessage({ type:'error', id:id,
+      message:(e && e.message) || String(e),
+      aborted: !!(e && e.name === 'AbortError') });
+  }
+}
+
+</script>
+
+<script>
+"use strict";
+/* =========================================================================
+ *  界面逻辑
+ *  1. 工具函数
+ *  2. 设置项（持久化 / 预设 / 分享链接）
+ *  3. Worker 池（含无 Worker 降级）
+ *  4. ZIP（deflate 压缩 / 解包）
+ *  5. APNG 合成
+ *  6. 队列与渲染
+ *  7. 详情弹窗 / 导出
+ * ======================================================================= */
+
+/* ---------------------- 1. 工具函数 ---------------------- */
+
+const $ = function(id){ return document.getElementById(id); };
+
+const el = {
+  drop:$('drop'), file:$('file'), fmt:$('fmt'), npot:$('npot'), mip:$('mip'), low:$('low'),
+  quality:$('quality'), filter:$('filter'), srgb:$('srgb'), premult:$('premult'),
+  reflect:$('reflect'), bump:$('bump'), flagsHex:$('flagsHex'), flagRec:$('flagRec'),
+  presets:$('presets'), copyCfg:$('copyCfg'),
+  cnt:$('cnt'), busy:$('busy'), busyTxt:$('busyTxt'), cancel:$('cancel'),
+  dlAll:$('dlAll'), clear:$('clear'), list:$('list'), empty:$('empty'),
+  mask:$('mask'), mTitle:$('mTitle'), mImg:$('mImg'), mKv:$('mKv'), mFlags:$('mFlags'),
+  mClose:$('mClose'), toast:$('toast'),
+  mTabs:$('mTabs'), panePreview:$('panePreview'), paneCmp:$('paneCmp'), errBox:$('errBox'),
+  mipBar:$('mipBar'), mipSel:$('mipSel'), btnMips:$('btnMips'), btnFaces:$('btnFaces'),
+  btnAnim:$('btnAnim'), palTitle:$('palTitle'), pal:$('pal'),
+  cmp:$('cmp'), cmpA:$('cmpA'), cmpB:$('cmpB'), cmpline:$('cmpline'), cmpRange:$('cmpRange'),
+  cmpNote:$('cmpNote')
+};
+
+let toastTimer = null;
+function toast(msg){
+  el.toast.textContent = msg;
+  el.toast.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.toast.classList.remove('on'); }, 2400);
+}
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
+}
+function baseName(n){ return n.replace(/\.[^.\\/]+$/, ''); }
+
+function download(blob, name){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+
+/* ---- 文件类型识别 ---- */
+function detectType(u){
+  if(!u || u.length < 4) return null;
+  if(u[0]===0x56 && u[1]===0x54 && u[2]===0x46 && u[3]===0x00) return 'vtf';
+  if(u[0]===0x89 && u[1]===0x50 && u[2]===0x4E && u[3]===0x47) return 'png';
+  if(u[0]===0xFF && u[1]===0xD8) return 'jpg';
+  if(u[0]===0x52 && u[1]===0x49 && u[2]===0x46 && u[3]===0x46) return 'webp';
+  if(u[0]===0x42 && u[1]===0x4D) return 'bmp';
+  if(u[0]===0x47 && u[1]===0x49 && u[2]===0x46) return 'gif';
+  if(u[0]===0x50 && u[1]===0x4B && u[2]===0x03 && u[3]===0x04) return 'zip';
+  return null;
+}
+
+/* ---- 图片 ↔ ImageData ---- */
+function decodeImageFile(blob){
+  return createImageBitmap(blob).then(function(bmp){
+    const cv = document.createElement('canvas');
+    cv.width = bmp.width; cv.height = bmp.height;
+    const ctx = cv.getContext('2d', { willReadFrequently:true });
+    ctx.drawImage(bmp, 0, 0);
+    const d = ctx.getImageData(0, 0, bmp.width, bmp.height);
+    if(bmp.close) bmp.close();
+    return d;
+  });
+}
+function imageDataToPNGBlob(imgData){
+  const cv = document.createElement('canvas');
+  cv.width = imgData.width; cv.height = imgData.height;
+  cv.getContext('2d').putImageData(imgData, 0, 0);
+  return new Promise(function(res){ cv.toBlob(function(b){ res(b); }, 'image/png'); });
+}
+function rgbaToDataURL(rgba, w, h){
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  cv.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(rgba), w, h), 0, 0);
+  return cv.toDataURL('image/png');
+}
+/* ---------------------- 2. 设置项 ---------------------- */
+
+const OPT_KEY = 'vtf-conv-opts-v1';
+
+function parseVec3(s){
+  const p = String(s).split(/[,，\s]+/).filter(Boolean).map(Number);
+  if(p.length < 3 || p.some(function(v){ return !isFinite(v); })) return [1,1,1];
+  return [p[0], p[1], p[2]];
+}
+function parseFlags(s){
+  s = String(s).trim().replace(/^0x/i, '');
+  if(!s) return null;
+  const v = parseInt(s, 16);
+  return isFinite(v) ? (v >>> 0) : null;
+}
+
+// [FEAT] 2.5 设置持久化：读取当前面板值
+// [FEAT] 3.2.3/3.2.6/3.2.7 统一收集面板选项：mip 过滤、sRGB、预乘 Alpha 都走同一条 opt
+function readOpts(){
+  return {
+    format: el.fmt.value === 'auto' ? 'auto' : parseInt(el.fmt.value, 10),
+    npot: el.npot.value,
+    mipmap: el.mip.checked,
+    lowRes: el.low.checked,
+    quality: el.quality.value,
+    filter: el.filter.value,
+    srgb: el.srgb.checked,
+    premult: el.premult.checked,
+    reflect: parseVec3(el.reflect.value),
+    bumpScale: (function(){ const v = parseFloat(el.bump.value); return isFinite(v) ? v : 1; })(),
+    flags: parseFlags(el.flagsHex.value)
+  };
+}
+
+function applyOpts(o){
+  if(!o) return;
+  try{
+    if(typeof o.fmt === 'string') el.fmt.value = o.fmt;
+    if(typeof o.npot === 'string') el.npot.value = o.npot;
+    if(typeof o.mip === 'boolean') el.mip.checked = o.mip;
+    if(typeof o.low === 'boolean') el.low.checked = o.low;
+    if(typeof o.quality === 'string') el.quality.value = o.quality;
+    if(typeof o.filter === 'string') el.filter.value = o.filter;
+    if(typeof o.srgb === 'boolean') el.srgb.checked = o.srgb;
+    if(typeof o.premult === 'boolean') el.premult.checked = o.premult;
+    if(typeof o.reflect === 'string') el.reflect.value = o.reflect;
+    if(typeof o.bump === 'string') el.bump.value = o.bump;
+    if(typeof o.flags === 'string') el.flagsHex.value = o.flags;
+  }catch(e){ /* 配置损坏时静默使用默认值 */ }
+}
+
+function saveOpts(){
+  try{
+    localStorage.setItem(OPT_KEY, JSON.stringify({
+      fmt: el.fmt.value, npot: el.npot.value, mip: el.mip.checked, low: el.low.checked,
+      quality: el.quality.value, filter: el.filter.value,
+      srgb: el.srgb.checked, premult: el.premult.checked,
+      reflect: el.reflect.value, bump: el.bump.value, flags: el.flagsHex.value
+    }));
+  }catch(e){ /* 隐私模式下 localStorage 不可用，忽略 */ }
+}
+
+function loadOpts(){
+  try{
+    const s = localStorage.getItem(OPT_KEY);
+    if(!s) return;
+    applyOpts(JSON.parse(s));
+  }catch(e){ /* 解析失败 → 用默认值 */ }
+}
+
+// [FEAT] 3.3.3 预设
+const PRESETS = {
+  diffuse: { fmt:'auto', npot:'scale', mip:true, low:true, quality:'normal', srgb:true,
+             premult:false, flags:'', label:'游戏漫反射' },
+  normal:  { fmt:'15', npot:'scale', mip:true, low:true, quality:'high', srgb:false,
+             premult:false, flags:'00800084', label:'法线贴图' },
+  ui:      { fmt:'15', npot:'keep', mip:false, low:false, quality:'high', srgb:false,
+             premult:true, flags:'0000000C', label:'UI 遮罩' },
+  glow:    { fmt:'15', npot:'scale', mip:true, low:true, quality:'normal', srgb:true,
+             premult:false, flags:'0000004C', label:'HDR 光晕' }
+};
+
+function applyPreset(key){
+  const p = PRESETS[key];
+  if(!p) return;
+  applyOpts({ fmt:p.fmt, npot:p.npot, mip:p.mip, low:p.low, quality:p.quality,
+              srgb:p.srgb, premult:p.premult, flags:p.flags });
+  saveOpts();
+  Array.prototype.forEach.call(el.presets.querySelectorAll('.pill'), function(b){
+    b.classList.toggle('on', b.dataset.preset === key);
+  });
+  toast('已套用预设：' + p.label);
+}
+
+/* ---- 配置分享链接 ---- */
+// [FEAT] 3.3.5 配置分享：设置序列化进 location.hash
+function b64enc(str){
+  return btoa(unescape(encodeURIComponent(str))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function b64dec(str){
+  str = str.replace(/-/g,'+').replace(/_/g,'/');
+  while(str.length % 4) str += '=';
+  return decodeURIComponent(escape(atob(str)));
+}
+function currentOptsSnapshot(){
+  return { fmt:el.fmt.value, npot:el.npot.value, mip:el.mip.checked, low:el.low.checked,
+           quality:el.quality.value, filter:el.filter.value, srgb:el.srgb.checked,
+           premult:el.premult.checked, reflect:el.reflect.value, bump:el.bump.value,
+           flags:el.flagsHex.value };
+}
+function readHashOpts(){
+  const h = location.hash || '';
+  const m = h.match(/opts=([A-Za-z0-9\-_]+)/);
+  if(!m) return;
+  try{ applyOpts(JSON.parse(b64dec(m[1]))); }catch(e){ /* 坏链接忽略 */ }
+}
+
+/* ---------------------- 3. Worker 池 ---------------------- */
+
+let engineURL = null;
+function getEngineURL(){
+  if(engineURL) return engineURL;
+  const eng = $('vtf-engine').textContent;
+  const boot = $('vtf-worker').textContent;
+  const blob = new Blob([eng, '\n;\n', boot], { type:'text/javascript' });
+  engineURL = URL.createObjectURL(blob);
+  return engineURL;
+}
+
+const pool = (function(){
+  let supported = (typeof Worker !== 'undefined') && !!window.Worker;
+  const MAX = Math.max(1, Math.min(4, navigator.hardwareConcurrency || 2));
+  let slots = [], queue = [], idSeq = 0, started = false, everOk = false, closed = false;
+
+  function mkErr(msg, aborted){
+    const e = new Error(msg || '未知错误');
+    if(aborted) e.name = 'AbortError';
+    return e;
+  }
+  function abortErr(){
+    const e = new Error('已取消');
+    e.name = 'AbortError';
+    return e;
+  }
+
+  function newSlot(){
+    const w = new Worker(getEngineURL());
+    const s = { w:w, busy:false, job:null };
+    w.onmessage = function(e){ onMsg(s, e.data); };
+    w.onerror = function(e){ onErr(s, e); };
+    return s;
+  }
+
+  // 无 Worker 时的同步降级路径：直接调用引擎函数
+  async function runLocal(job){
+    const m = job.msg;
+    const hooks = {
+      tick: async function(p){
+        if(job.aborted) throw abortErr();
+        if(job.onProgress) job.onProgress(p);
+        await new Promise(function(r){ setTimeout(r, 0); });
+      }
+    };
+    try{
+      if(m.type === 'vtf2png'){
+        const r = renderVTF2PNG(m.buf, m.frame, m.mip, m.face, m.maxSize);
+        job.resolve({ type:'done', id:job.id, rgba:r.data.buffer, w:r.w, h:r.h,
+                      hd:r.hd, level:r.level, palette:r.palette ? r.palette.slice().buffer : null });
+      }else{
+        const out = await renderIMG2VTF(new Uint8ClampedArray(m.rgba), m.w, m.h, m.opt, hooks);
+        job.resolve({ type:'done', id:job.id, buf:out.buf, w:out.w, h:out.h,
+                      srcW:m.w, srcH:m.h, fmt:out.fmt, mipCount:out.mipCount,
+                      flags:out.flags, size:out.size, oneBitAlpha:out.oneBitAlpha,
+                      notes:out.notes, thumb:out.thumb.buffer, tw:out.thumbW, th:out.thumbH });
+      }
+    }catch(e){
+      job.reject(e);
+    }
+  }
+
+  // 整体降级：终止全部 Worker，把排队任务交给主线程
+  function fallbackAll(){
+    supported = false;
+    closed = true;
+    started = true;
+    slots.forEach(function(s){ try{ s.w.terminate(); }catch(_){} });
+    slots = [];
+    const pend = queue.splice(0, queue.length);
+    for(let i = 0; i < pend.length; i++) runLocal(pend[i]);
+  }
+
+  // 懒启动：先只开 1 个 Worker，队列积压时再按需扩容，避免单文件场景白付启动成本
+  function ensure(){
+    if(started || !supported) return;
+    started = true;
+    try{ slots.push(newSlot()); }
+    catch(e){ fallbackAll(); }
+  }
+
+  function pump(){
+    if(!supported) return;
+    ensure();
+    if(!supported) return;
+    while(queue.length){
+      let free = null;
+      for(let i = 0; i < slots.length; i++) if(!slots[i].busy){ free = slots[i]; break; }
+      if(!free){
+        if(slots.length < MAX){
+          try{ slots.push(newSlot()); continue; }catch(e){ fallbackAll(); return; }
+        }
+        return;
+      }
+      const job = queue.shift();
+      if(job.aborted) continue;
+      free.busy = true; free.job = job;
+      try{
+        free.w.postMessage(Object.assign({}, job.msg, { id:job.id }), job.transfer || []);
+      }catch(err){
+        free.busy = false; free.job = null;
+        job.reject(err);
+      }
+    }
+  }
+
+  function onMsg(s, d){
+    everOk = true;
+    const job = s.job;
+    if(!job || d.id !== job.id) return;
+    if(d.type === 'progress'){
+      if(!job.aborted && job.onProgress) job.onProgress(d.p);
+      return;
+    }
+    s.busy = false; s.job = null;
+    if(d.type === 'done') job.resolve(d);
+    else job.reject(mkErr(d.message, d.aborted));
+    pump();
+  }
+
+  function onErr(s, e){
+    const job = s.job;
+    s.busy = false; s.job = null;
+    if(!everOk){
+      // Worker 从未成功启动（例如被浏览器策略拦截）→ 整条流水线退回主线程
+      if(job) queue.unshift(job);
+      fallbackAll();
+      return;
+    }
+    try{ s.w.terminate(); }catch(_){}
+    const i = slots.indexOf(s);
+    if(i >= 0) slots.splice(i, 1);
+    if(job) job.reject(mkErr('后台线程异常：' + ((e && e.message) || 'unknown')));
+    if(!closed){
+      try{ slots.push(newSlot()); }catch(_){ fallbackAll(); return; }
+    }
+    pump();
+  }
+
+  function abortJob(job){
+    if(job.aborted) return;
+    job.aborted = true;
+    const qi = queue.indexOf(job);
+    if(qi >= 0){ queue.splice(qi, 1); job.reject(abortErr()); return; }
+    for(let i = 0; i < slots.length; i++){
+      if(slots[i].job === job){
+        try{ slots[i].w.postMessage({ type:'abort', id:job.id }); }catch(_){}
+        // 兜底：3 秒还没退出就重启该 Worker
+        const s = slots[i];
+        setTimeout(function(){
+          if(s.job === job){
+            try{ s.w.terminate(); }catch(_){}
+            const k = slots.indexOf(s);
+            if(k >= 0) slots.splice(k, 1);
+            s.busy = false; s.job = null;
+            if(!closed){
+              try{ slots.push(newSlot()); }catch(_){}
+            }
+            job.reject(abortErr());
+            pump();
+          }
+        }, 3000);
+      }
+    }
+  }
+
+  return {
+    get supported(){ return supported; },
+    // 空闲时预热一个 Worker，避免第一张图额外付出脚本编译时间
+    warm: function(){
+      if(!supported) return;
+      try{ ensure(); }catch(e){/* 预热失败不影响后续降级 */}
+    },
+    run: function(msg, opts){
+      opts = opts || {};
+      return new Promise(function(resolve, reject){
+        const job = { id:++idSeq, msg:msg, resolve:resolve, reject:reject,
+                      onProgress:opts.onProgress, aborted:false, transfer:opts.transfer };
+        if(opts.signal){
+          if(opts.signal.aborted){ reject(abortErr()); return; }
+          opts.signal.addEventListener('abort', function(){ abortJob(job); }, { once:true });
+        }
+        if(!supported){ runLocal(job); return; }
+        queue.push(job);
+        pump();
+      });
+    }
+  };
+})();
+
+/* ---------------------- 4. ZIP ---------------------- */
+
+const _crcTable = (function(){
+  const t = new Uint32Array(256);
+  for(let n = 0; n < 256; n++){
+    let c = n;
+    for(let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+
+function crc32(buf){
+  let c = 0xFFFFFFFF;
+  for(let i = 0; i < buf.length; i++) c = _crcTable[(c ^ buf[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+
+function dosDateTime(d){
+  const time = ((d.getHours() & 31) << 11) | ((d.getMinutes() & 63) << 5) | ((d.getSeconds() / 2) & 31);
+  const date = (((d.getFullYear() - 1980) & 127) << 9) | (((d.getMonth() + 1) & 15) << 5) | (d.getDate() & 31);
+  return { time: time, date: date };
+}
+
+async function deflateRaw(data){
+  if(typeof CompressionStream === 'undefined') return null;
+  const cs = new CompressionStream('deflate-raw');
+  const wr = cs.writable.getWriter();
+  wr.write(data);
+  wr.close();
+  return new Uint8Array(await new Response(cs.readable).arrayBuffer());
+}
+async function inflateRaw(data){
+  if(typeof DecompressionStream === 'undefined')
+    throw new Error('当前浏览器不支持 DecompressionStream，无法解压 ZIP');
+  const ds = new DecompressionStream('deflate-raw');
+  const wr = ds.writable.getWriter();
+  wr.write(data);
+  wr.close();
+  return new Uint8Array(await new Response(ds.readable).arrayBuffer());
+}
+
+// files: [{name, data:Uint8Array}] → Blob
+// [FEAT] 2.4 优先用 deflate-raw 压缩；不可用或超过 200MB 时退回 store
+async function makeZip(files){
+  const enc = new TextEncoder();
+  const now = dosDateTime(new Date());
+  const parts = [], central = [];
+  let offset = 0;
+
+  let totalRaw = 0;
+  for(let i = 0; i < files.length; i++) totalRaw += files[i].data.length;
+  const canDeflate = (typeof CompressionStream !== 'undefined') && totalRaw <= 200*1024*1024;
+
+  for(let fi = 0; fi < files.length; fi++){
+    const f = files[fi];
+    const name = enc.encode(f.name);
+    const crc = crc32(f.data);
+    const usize = f.data.length;
+    let method = 0, payload = f.data;
+
+    if(canDeflate && f.data.length > 256){
+      try{
+        const c = await deflateRaw(f.data);
+        if(c && c.length < f.data.length){ method = 8; payload = c; }
+      }catch(e){ /* 压缩失败就用 store */ }
+    }
+    const csize = payload.length;
+
+    const lh = new Uint8Array(30 + name.length);
+    const lv = new DataView(lh.buffer);
+    lv.setUint32(0,  0x04034b50, true);   // local file header sig
+    lv.setUint16(4,  20, true);           // version needed
+    lv.setUint16(6,  0x0800, true);       // flags: UTF-8 文件名
+    lv.setUint16(8,  method, true);
+    lv.setUint16(10, now.time, true);
+    lv.setUint16(12, now.date, true);
+    lv.setUint32(14, crc, true);
+    lv.setUint32(18, csize, true);
+    lv.setUint32(22, usize, true);
+    lv.setUint16(26, name.length, true);
+    lv.setUint16(28, 0, true);            // extra len
+    lh.set(name, 30);
+
+    const ch = new Uint8Array(46 + name.length);
+    const cv = new DataView(ch.buffer);
+    cv.setUint32(0,  0x02014b50, true);   // central directory sig
+    cv.setUint16(4,  20, true);           // version made by
+    cv.setUint16(6,  20, true);           // version needed
+    cv.setUint16(8,  0x0800, true);
+    cv.setUint16(10, method, true);
+    cv.setUint16(12, now.time, true);
+    cv.setUint16(14, now.date, true);
+    cv.setUint32(16, crc, true);
+    cv.setUint32(20, csize, true);
+    cv.setUint32(24, usize, true);
+    cv.setUint16(28, name.length, true);
+    cv.setUint16(30, 0, true);            // extra
+    cv.setUint16(32, 0, true);            // comment
+    cv.setUint16(34, 0, true);            // disk number
+    cv.setUint16(36, 0, true);            // internal attrs
+    cv.setUint32(38, 0, true);            // external attrs
+    cv.setUint32(42, offset, true);       // local header offset
+    ch.set(name, 46);
+
+    parts.push(lh, payload);
+    central.push(ch);
+    offset += lh.length + csize;
+  }
+
+  const cdStart = offset;
+  let cdSize = 0;
+  central.forEach(function(c){ cdSize += c.length; });
+
+  const eocd = new Uint8Array(22);
+  const ev = new DataView(eocd.buffer);
+  ev.setUint32(0,  0x06054b50, true);
+  ev.setUint16(4,  0, true);
+  ev.setUint16(6,  0, true);
+  ev.setUint16(8,  files.length, true);
+  ev.setUint16(10, files.length, true);
+  ev.setUint32(12, cdSize, true);
+  ev.setUint32(16, cdStart, true);
+  ev.setUint16(20, 0, true);
+
+  return new Blob(parts.concat(central, [eocd]), { type:'application/zip' });
+}
+
+// [FEAT] 3.3.2 解析 ZIP（仅 store / deflate）
+async function unzip(buf){
+  const u = new Uint8Array(buf), dv = new DataView(buf);
+  let eocd = -1;
+  const from = Math.max(0, u.length - 22 - 65535);
+  for(let i = u.length - 22; i >= from; i--){
+    if(dv.getUint32(i, true) === 0x06054b50){ eocd = i; break; }
+  }
+  if(eocd < 0) throw new Error('不是有效的 ZIP（未找到中央目录）');
+
+  const count = dv.getUint16(eocd + 10, true);
+  const cdOff = dv.getUint32(eocd + 16, true);
+  if(cdOff === 0xFFFFFFFF) throw new Error('暂不支持 ZIP64 格式');
+
+  const entries = [];
+  let p = cdOff;
+  for(let i = 0; i < count; i++){
+    if(p + 46 > u.length || dv.getUint32(p, true) !== 0x02014b50) break;
+    const flags = dv.getUint16(p + 8, true);
+    const method = dv.getUint16(p + 10, true);
+    const csize = dv.getUint32(p + 20, true);
+    const usize = dv.getUint32(p + 24, true);
+    const nlen = dv.getUint16(p + 28, true);
+    const elen = dv.getUint16(p + 30, true);
+    const clen = dv.getUint16(p + 32, true);
+    const lho = dv.getUint32(p + 42, true);
+    const name = new TextDecoder('utf-8').decode(u.subarray(p + 46, p + 46 + nlen));
+    if(flags & 1) throw new Error('不支持加密 ZIP');
+    if(usize === 0xFFFFFFFF || csize === 0xFFFFFFFF || lho === 0xFFFFFFFF)
+      throw new Error('暂不支持 ZIP64 格式');
+    entries.push({ name:name, method:method, csize:csize, lho:lho });
+    p += 46 + nlen + elen + clen;
+  }
+
+  const out = [];
+  for(let i = 0; i < entries.length; i++){
+    const e = entries[i];
+    if(/\/$/.test(e.name)) continue;
+    const lnl = dv.getUint16(e.lho + 26, true);
+    const lel = dv.getUint16(e.lho + 28, true);
+    const dOff = e.lho + 30 + lnl + lel;
+    if(dOff + e.csize > u.length) throw new Error('ZIP 数据区越界：' + e.name);
+    const raw = u.subarray(dOff, dOff + e.csize);
+    let data;
+    if(e.method === 0) data = new Uint8Array(raw);
+    else if(e.method === 8) data = await inflateRaw(raw);
+    else throw new Error('不支持的压缩方式（method=' + e.method + '）：' + e.name);
+    out.push({ name: e.name.split('/').pop(), data: data });
+  }
+  return out;
+}
+
+/* ---------------------- 5. APNG 合成 ---------------------- */
+
+function parsePNGChunks(buf){
+  const u = new Uint8Array(buf), dv = new DataView(buf);
+  const chunks = [];
+  let p = 8;
+  while(p + 8 <= u.length){
+    const len = dv.getUint32(p, false);
+    if(p + 12 + len > u.length) break;
+    const type = String.fromCharCode(u[p+4], u[p+5], u[p+6], u[p+7]);
+    chunks.push({ type: type, data: u.subarray(p + 8, p + 8 + len) });
+    p += 12 + len;
+    if(type === 'IEND') break;
+  }
+  return chunks;
+}
+function pngChunk(type, data){
+  const len = data.length;
+  const buf = new Uint8Array(12 + len);
+  const dv = new DataView(buf.buffer);
+  dv.setUint32(0, len, false);
+  for(let i = 0; i < 4; i++) buf[4+i] = type.charCodeAt(i);
+  buf.set(data, 8);
+  dv.setUint32(8 + len, crc32(buf.subarray(4, 8 + len)), false);
+  return buf;
+}
+function u32be(v){
+  return new Uint8Array([(v>>>24)&255, (v>>>16)&255, (v>>>8)&255, v&255]);
+}
+function cat(list){
+  let n = 0;
+  list.forEach(function(x){ n += x.length; });
+  const out = new Uint8Array(n);
+  let p = 0;
+  list.forEach(function(x){ out.set(x, p); p += x.length; });
+  return out;
+}
+
+// 用现成的 PNG 帧拼 APNG（每帧一个完整 zlib 流，合并进单个 fdAT）
+// [FEAT] 3.1.4 动画合成 APNG：复用现有 PNG 帧的 zlib 流，只补 acTL/fcTL/fdAT
+async function makeAPNG(blobs, delayMs){
+  const frames = [];
+  for(let i = 0; i < blobs.length; i++){
+    const chunks = parsePNGChunks(await blobs[i].arrayBuffer());
+    let ihdr = null;
+    const idat = [];
+    for(const c of chunks){
+      if(c.type === 'IHDR') ihdr = c.data;
+      else if(c.type === 'IDAT') idat.push(c.data);
+    }
+    if(!ihdr) throw new Error('第 ' + (i+1) + ' 帧不是有效的 PNG');
+    frames.push({ ihdr: ihdr, idat: idat });
+  }
+  if(!frames.length) throw new Error('没有可导出的帧');
+
+  const ihdr = frames[0].ihdr;
+  const W = (ihdr[0]<<24 | ihdr[1]<<16 | ihdr[2]<<8 | ihdr[3]) >>> 0;
+  const H = (ihdr[4]<<24 | ihdr[5]<<16 | ihdr[6]<<8 | ihdr[7]) >>> 0;
+  const dnum = Math.max(1, Math.round(delayMs || 100)), dden = 1000;
+
+  const parts = [new Uint8Array([137,80,78,71,13,10,26,10]), pngChunk('IHDR', ihdr)];
+  parts.push(pngChunk('acTL', cat([u32be(frames.length), u32be(0)])));
+
+  let seq = 0;
+  function fctl(s){
+    return pngChunk('fcTL', cat([u32be(s), u32be(W), u32be(H), u32be(0), u32be(0),
+      new Uint8Array([(dnum>>8)&255, dnum&255, (dden>>8)&255, dden&255, 0, 0])]));
+  }
+  parts.push(fctl(seq++));
+  for(const d of frames[0].idat) parts.push(pngChunk('IDAT', d));
+
+  for(let i = 1; i < frames.length; i++){
+    parts.push(fctl(seq++));
+    const body = cat([u32be(seq++), cat(frames[i].idat)]);
+    parts.push(pngChunk('fdAT', body));
+  }
+  parts.push(pngChunk('IEND', new Uint8Array(0)));
+  return new Blob(parts, { type:'image/apng' });
+}
+
+/* ---------------------- 6. 队列与渲染 ---------------------- */
+
+const items = [];
+const nodes = new Map();
+let seq = 0;
+let inflight = 0;
+const activeBatches = new Set();
+let dirty = false;         // 有未下载的成果 → 关闭页面前提示
+let dragId = null;
+
+function newBatch(){
+  const c = new AbortController();
+  activeBatches.add(c);
+  c.signal.addEventListener('abort', function(){ activeBatches.delete(c); }, { once:true });
+  return c;
+}
+function abortAll(){
+  activeBatches.forEach(function(c){ c.abort(); });
+}
+
+function newItem(file, kind){
+  return {
+    id: ++seq,
+    key: file.name + '|' + file.size + '|' + (file.lastModified || 0),
+    file: file, srcName: file.name, srcSize: file.size, kind: kind,
+    frame: 0, status: 'pending', progress: 0, err: null, errDetail: null,
+    result: null, notes: [], buf: null, hd: null, palette: null,
+    mipLevel: 0, mipBlobs: {}, overrideFmt: '', needsRerun: false, vtfW: 0, vtfH: 0
+  };
+}
+
+/* ---- 单条目 DOM ---- */
+// [FEAT] 2.9 增量渲染：每个条目只建一次 DOM，之后按 key 局部更新，不再整表重建
+function mountNode(it){
+  const d = document.createElement('div');
+  d.className = 'item';
+  d.dataset.id = String(it.id);
+  d.draggable = true;
+  d.innerHTML =
+    '<div class="thumbbox"></div>' +
+    '<div class="meta">' +
+      '<div class="name"><span class="arrow"></span><span class="nm"></span></div>' +
+      '<div class="info"></div>' +
+      '<div class="prog"><i></i></div>' +
+      '<div class="badge-err"></div>' +
+    '</div>' +
+    '<div class="acts"></div>';
+
+  d._refs = {
+    box: d.querySelector('.thumbbox'),
+    arrow: d.querySelector('.arrow'),
+    nm: d.querySelector('.nm'),
+    info: d.querySelector('.info'),
+    prog: d.querySelector('.prog'),
+    bar: d.querySelector('.prog > i'),
+    badge: d.querySelector('.badge-err'),
+    acts: d.querySelector('.acts')
+  };
+
+  bindItem(d, it);
+  nodes.set(it.id, d);
+  updateItem(it);
+  el.list.appendChild(d);
+  return d;
+}
+
+function bindItem(d, it){
+  d.addEventListener('dragstart', function(e){
+    dragId = it.id;
+    d.classList.add('dragging');
+    try{ e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(it.id)); }catch(_){}
+  });
+  d.addEventListener('dragend', function(){
+    dragId = null;
+    d.classList.remove('dragging');
+    Array.prototype.forEach.call(el.list.children, function(x){ x.classList.remove('dropzone'); });
+  });
+  d.addEventListener('dragover', function(e){
+    if(dragId === null || dragId === it.id) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    d.classList.add('dropzone');
+  });
+  d.addEventListener('dragleave', function(){ d.classList.remove('dropzone'); });
+  d.addEventListener('drop', function(e){
+    e.preventDefault();
+    d.classList.remove('dropzone');
+    if(dragId !== null && dragId !== it.id) reorder(dragId, it.id);
+    dragId = null;
+  });
+
+  d.addEventListener('click', function(e){
+    const b = e.target.closest('[data-act]');
+    if(!b) return;
+    const act = b.dataset.act;
+    if(act === 'dl'){ download(it.result.outBlob, it.result.outName); toast('已下载 ' + it.result.outName); }
+    else if(act === 'view'){ openModal(it); }
+    else if(act === 'rm'){ removeItem(it); }
+    else if(act === 'copyerr'){
+      const txt = it.err + (it.errDetail ? '\n\n' + it.errDetail : '');
+      copyText(txt);
+    }
+    else if(act === 'retry'){ retryItem(it); }
+    else if(act === 'rerun'){ rerunItem(it); }
+  });
+  d.addEventListener('change', function(e){
+    if(e.target && e.target.classList.contains('fmtpick')){
+      it.overrideFmt = e.target.value;
+      it.needsRerun = true;
+      updateItem(it);
+    }
+  });
+}
+
+// [FEAT] 3.3.1 拖拽重排序：只移动 DOM 与 items 数组，不重算已完成的条目
+function reorder(fromId, toId){
+  const fi = items.findIndex(function(x){ return x.id === fromId; });
+  const ti = items.findIndex(function(x){ return x.id === toId; });
+  if(fi < 0 || ti < 0 || fi === ti) return;
+  const moved = items.splice(fi, 1)[0];
+  items.splice(ti, 0, moved);
+  orderList();
+}
+
+function orderList(){
+  const kids = el.list.children;
+  let same = kids.length === items.length;
+  if(same){
+    for(let i = 0; i < items.length; i++){
+      if(kids[i] !== nodes.get(items[i].id)){ same = false; break; }
+    }
+  }
+  if(same) return;
+  for(let i = 0; i < items.length; i++){
+    const d = nodes.get(items[i].id);
+    if(d) el.list.appendChild(d);
+  }
+}
+
+const FMT_OPTS = [
+  ['', '跟随设置'], ['auto', '自动'], ['12', 'BGRA8888'], ['0', 'RGBA8888'],
+  ['13', 'DXT1'], ['15', 'DXT5'], ['14', 'DXT3'], ['3', 'BGR888'],
+  ['5', 'I8'], ['6', 'IA88'], ['8', 'A8']
+];
+
+function actsHTML(it){
+  if(it.status === 'working' || it.status === 'pending')
+    return '<button class="btn sm danger" data-act="rm">移除</button>';
+
+  if(it.status === 'error'){
+    return '<button class="btn sm" data-act="copyerr">复制</button>' +
+           '<button class="btn sm" data-act="retry">重试</button>' +
+           '<button class="btn sm" data-act="view">详情</button>' +
+           '<button class="btn sm danger" data-act="rm">移除</button>';
+  }
+
+  const r = it.result;
+  let h = '';
+  if(it.kind === 'p2v'){
+    h += '<select class="mini fmtpick">' + FMT_OPTS.map(function(o){
+      const sel = (it.overrideFmt === o[0]) ? ' selected' : '';
+      return '<option value="' + o[0] + '"' + sel + '>' + o[1] + '</option>';
+    }).join('') + '</select>';
+    if(it.needsRerun) h += '<button class="btn sm primary" data-act="rerun">重新转换</button>';
+  }
+  h += '<button class="btn sm primary" data-act="dl">下载</button>' +
+       '<button class="btn sm" data-act="view">详情</button>' +
+       '<button class="btn sm danger" data-act="rm">移除</button>';
+  return h;
+}
+
+function setThumb(d, it){
+  const ref = d._refs;
+  if(it.status === 'working' || it.status === 'pending'){
+    ref.box.innerHTML = '<span class="spin"></span>';
+    return;
+  }
+  if(it.status === 'error'){
+    if(!ref.box.firstChild || !ref.box.firstChild.classList || !ref.box.firstChild.classList.contains('thumbbad')){
+      ref.box.innerHTML = '<div class="thumbbad" title="查看错误详情">!</div>';
+      ref.box.firstChild.style.cursor = 'pointer';
+      ref.box.firstChild.addEventListener('click', function(){ openModal(it); });
+    }
+    return;
+  }
+  if(it.result && it.result.thumb){
+    if(!ref.box.firstChild || ref.box.firstChild.tagName !== 'IMG'){
+      ref.box.innerHTML = '<img class="thumb" alt="缩略图">';
+      ref.box.firstChild.addEventListener('click', function(){ openModal(it); });
+      ref.box.firstChild.style.cursor = 'zoom-in';
+    }
+    ref.box.firstChild.src = it.result.thumb;
+  }
+}
+
+function updateItem(it){
+  const d = nodes.get(it.id);
+  if(!d) return;
+  const ref = d._refs;
+
+  const key = [it.status, it.err || '', it.needsRerun ? 1 : 0, it.overrideFmt,
+               it.result ? it.result.outName : '', it.result ? it.result.infoText : ''].join('|');
+
+  d.classList.toggle('err', it.status === 'error');
+
+  if(d._key !== key){
+    d._key = key;
+    setThumb(d, it);
+    ref.arrow.textContent = it.kind === 'v2p' ? 'VTF → PNG' : 'PNG → VTF';
+    ref.arrow.className = 'arrow' + (it.kind === 'v2p' ? '' : ' rev');
+    ref.nm.textContent = it.result ? it.result.outName : it.srcName;
+
+    if(it.status === 'error'){
+      ref.info.innerHTML = '';
+      ref.badge.style.display = 'block';
+      ref.badge.textContent = '✕ ' + it.err;
+    }else if(it.status === 'done'){
+      ref.info.innerHTML = it.result.infoText;
+      ref.badge.style.display = 'none';
+    }else{
+      ref.info.innerHTML = '<span><b>状态</b> 等待处理…</span>';
+      ref.badge.style.display = 'none';
+    }
+    ref.acts.innerHTML = actsHTML(it);
+  }
+
+  if(it.status === 'working'){
+    ref.prog.style.display = 'block';
+    if(it.progress > 0){
+      ref.prog.classList.remove('indet');
+      ref.bar.style.width = Math.round(it.progress * 100) + '%';
+    }else{
+      ref.prog.classList.add('indet');
+    }
+  }else{
+    ref.prog.style.display = 'none';
+  }
+}
+
+function updateBar(){
+  const done = items.filter(function(x){ return x.status === 'done'; }).length;
+  const bad = items.filter(function(x){ return x.status === 'error'; }).length;
+  el.cnt.textContent = items.length + ' 个文件' +
+    (done ? ' · 成功 ' + done : '') + (bad ? ' · 失败 ' + bad : '');
+  el.empty.style.display = items.length ? 'none' : 'block';
+  el.dlAll.disabled = done === 0;
+  el.clear.disabled = items.length === 0;
+  updateBusy();
+}
+
+function updateBusy(){
+  const active = items.filter(function(x){ return x.status === 'working' || x.status === 'pending'; }).length;
+  el.busy.classList.toggle('on', active > 0);
+  if(active) el.busyTxt.textContent = '处理中… 剩余 ' + active + ' 项';
+}
+
+function removeItem(it){
+  const i = items.indexOf(it);
+  if(i >= 0) items.splice(i, 1);
+  const d = nodes.get(it.id);
+  if(d){ d.remove(); nodes.delete(it.id); }
+  updateBar();
+}
+
+function copyText(txt){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){ toast('已复制到剪贴板'); },
+      function(){ toast('复制失败，请手动选择文本'); });
+  }else{
+    const ta = document.createElement('textarea');
+    ta.value = txt; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); toast('已复制到剪贴板'); }
+    catch(e){ toast('复制失败'); }
+    ta.remove();
+  }
+}
+
+/* ---- 错误条目 ---- */
+function addErrItem(file, msg, detail){
+  const it = newItem(file, 'p2v');
+  it.status = 'error';
+  it.err = msg;
+  it.errDetail = detail || null;
+  items.push(it);
+  mountNode(it);
+  orderList();
+  updateBar();
+}
+
+/* ---------------------- 7. 处理流程 ---------------------- */
+
+// [FEAT] 2.2 入队去重：name + size + lastModified 相同则跳过
+async function addFiles(list, opts){
+  opts = opts || {};
+  if(!list || !list.length) return;
+  const files = Array.prototype.slice.call(list);
+  const seen = {};
+  items.forEach(function(x){ seen[x.key] = 1; });
+
+  const fresh = [];
+  let dup = 0;
+  for(let i = 0; i < files.length; i++){
+    const f = files[i];
+    const k = f.name + '|' + f.size + '|' + (f.lastModified || 0);
+    if(seen[k]){ dup++; continue; }
+    seen[k] = 1;
+    fresh.push(f);
+  }
+  if(dup) toast('已跳过 ' + dup + ' 个重复文件');
+  if(!fresh.length) return;
+
+  const controller = newBatch();
+  for(let i = 0; i < fresh.length; i++){
+    await queueFile(fresh[i], controller.signal);
+  }
+  orderList();
+  updateBar();
+}
+
+async function queueFile(file, signal){
+  if(signal.aborted) return;
+  let head;
+  try{
+    head = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+  }catch(e){
+    if(!signal.aborted) addErrItem(file, '读取文件失败：' + (e.message || e), null);
+    return;
+  }
+  if(signal.aborted) return;
+  const type = detectType(head);
+
+  if(type === 'zip'){
+    await importZip(file, signal);
+    return;
+  }
+
+  if(type === 'vtf'){
+    let buf;
+    try{ buf = await file.arrayBuffer(); }
+    catch(e){ if(!signal.aborted) addErrItem(file, '读取 VTF 失败：' + e.message, null); return; }
+    if(signal.aborted) return;
+
+    let hd;
+    try{ hd = parseVTFHeader(buf); }
+    catch(e){ addErrItem(file, e.message, e.stack); return; }
+
+    const total = hd.frames;
+    const n = Math.min(total, 256);
+    for(let f = 0; f < n; f++){
+      const it = newItem(file, 'v2p');
+      it.buf = buf; it.hd = hd; it.frame = f;
+      if(total > 256) it.notes.push('共 ' + total + ' 帧，已导出前 256 帧');
+      items.push(it);
+      mountNode(it);
+      runItem(it, signal);
+    }
+    orderList();
+    updateBar();
+    return;
+  }
+
+  if(type){
+    const it = newItem(file, 'p2v');
+    items.push(it);
+    mountNode(it);
+    runItem(it, signal);
+    orderList();
+    updateBar();
+    return;
+  }
+
+  addErrItem(file, '无法识别的文件格式（既不是 VTF、ZIP，也不是可解码的图片）', null);
+}
+
+// [FEAT] 3.3.2 ZIP 导入
+async function importZip(file, signal){
+  let buf;
+  try{ buf = await file.arrayBuffer(); }
+  catch(e){ if(!signal.aborted) addErrItem(file, '读取 ZIP 失败：' + e.message, null); return; }
+  if(signal.aborted) return;
+  let entries;
+  try{ entries = await unzip(buf); }
+  catch(e){ if(!signal.aborted) addErrItem(file, 'ZIP 解析失败：' + e.message, e.stack); return; }
+  if(signal.aborted) return;
+
+  const picked = [];
+  for(let i = 0; i < entries.length; i++){
+    const e = entries[i];
+    const t = detectType(e.data.subarray(0, 16));
+    if(t === 'vtf' || t === 'png' || t === 'jpg' || t === 'webp' || t === 'bmp' || t === 'gif'){
+      picked.push(new File([e.data], e.name, { lastModified: 0 }));
+    }
+  }
+  if(!picked.length){ toast('ZIP 里没有可转换的 VTF / 图片'); return; }
+  toast('ZIP 解出 ' + picked.length + ' 个文件');
+  await addFiles(picked, { fromZip:true });
+}
+
+function setProgress(it, p){
+  it.progress = p;
+  const d = nodes.get(it.id);
+  if(d && it.status === 'working'){
+    d._refs.prog.style.display = 'block';
+    d._refs.prog.classList.remove('indet');
+    d._refs.bar.style.width = Math.round(p * 100) + '%';
+  }
+}
+
+async function runItem(it, signal){
+  if(it.status === 'working') return;
+  it.status = 'working';
+  it.progress = 0;
+  it.err = null;
+  updateItem(it);
+  updateBusy();
+  inflight++;
+
+  try{
+    if(it.kind === 'v2p'){
+      await runDecode(it, signal);
+    }else{
+      await runEncode(it, signal);
+    }
+    if(signal.aborted){
+      const e = new Error('已取消');
+      e.name = 'AbortError';
+      throw e;
+    }
+    it.status = 'done';
+    dirty = true;
+  }catch(e){
+    it.status = 'error';
+    it.err = (e && e.message) ? e.message : String(e);
+    it.errDetail = (e && e.stack) ? e.stack : null;
+    if(e && e.name === 'AbortError') it.err = '已取消';
+    else console.error(e);
+  }
+
+  inflight--;
+  updateItem(it);
+  updateBar();
+  if(inflight === 0) finishBatch();
+}
+
+function finishBatch(){
+  el.busy.classList.remove('on');
+  const ok = items.filter(function(x){ return x.status === 'done'; }).length;
+  const bad = items.filter(function(x){ return x.status === 'error' && x.err !== '已取消'; }).length;
+  const cancelled = items.filter(function(x){ return x.status === 'error' && x.err === '已取消'; }).length;
+  if(!items.length) return;
+  if(bad) toast('完成 ' + ok + ' 个，失败 ' + bad + ' 个' + (cancelled ? '，取消 ' + cancelled + ' 个' : ''));
+  else if(cancelled) toast('已取消 ' + cancelled + ' 个文件' + (ok ? '，完成 ' + ok + ' 个' : ''));
+  else toast('已转换 ' + ok + ' 个文件');
+}
+
+async function runDecode(it, signal){
+  const d = await pool.run(
+    { type:'vtf2png', buf:it.buf, frame:it.frame, mip:0, face:0, maxSize:0 },
+    { signal:signal, onProgress:function(p){ setProgress(it, p); } }
+  );
+  const hd = d.hd || it.hd;
+  it.hd = hd;
+  it.palette = d.palette ? new Uint8Array(d.palette) : null;
+
+  const rgba = new Uint8Array(d.rgba);
+  const imgData = new ImageData(new Uint8ClampedArray(rgba.buffer), d.w, d.h);
+  const blob = await imageDataToPNGBlob(imgData);
+  const multi = hd.frames > 1;
+
+  const detail = {
+    '文件': it.srcName,
+    'VTF 版本': hd.vMaj + '.' + hd.vMin + '（header ' + hd.headerSize + ' 字节）',
+    '尺寸': d.w + ' × ' + d.h + (hd.depth > 1 ? ' × ' + hd.depth : ''),
+    '图像格式': fmtName(hd.hiFmt) + '（ID ' + hd.hiFmt + '）',
+    'Mipmap': hd.mipCount + ' 级',
+    '当前帧': (it.frame + 1) + ' / ' + hd.frames,
+    '立方体贴图': (hd.flags & FLAG.ENVMAP) ? '是（6 面，已导出第 1 面）' : '否',
+    'Bump Scale': hd.bumpScale.toFixed(4),
+    '反射率': hd.reflect.map(function(v){ return v.toFixed(3); }).join(', '),
+    'Flags': '0x' + (hd.flags >>> 0).toString(16).toUpperCase().padStart(8,'0'),
+    '输出': fmtBytes(blob.size) + ' PNG'
+  };
+
+  const info = {
+    '宽 × 高': d.w + ' × ' + d.h,
+    'VTF 版本': hd.vMaj + '.' + hd.vMin,
+    '图像格式': fmtName(hd.hiFmt),
+    'Mipmap': hd.mipCount + ' 级',
+    '缩略图': (hd.loFmt !== FMT.NONE && hd.loW) ? (hd.loW + '×' + hd.loH) : '无',
+    '帧': multi ? ((it.frame + 1) + ' / ' + hd.frames) : '1',
+    '源文件': fmtBytes(it.srcSize)
+  };
+
+  it.result = {
+    outName: baseName(it.srcName) + (multi ? '_f' + String(it.frame).padStart(3,'0') : '') + '.png',
+    outBlob: blob,
+    thumb: null,
+    prevBlob: blob,
+    detail: detail,
+    infoText: infoText(info, it.notes),
+    info: info,
+    flags: flagList(hd.flags)
+  };
+  it.result.thumb = thumbFromImageData(imgData);
+  it.mipBlobs[0] = blob;
+  it.vtfW = d.w; it.vtfH = d.h;
+}
+
+async function runEncode(it, signal){
+  const src = await decodeImageFile(it.file);
+  const opt = readOpts();
+  if(it.overrideFmt) opt.format = it.overrideFmt === 'auto' ? 'auto' : parseInt(it.overrideFmt, 10);
+
+  const d = await pool.run(
+    { type:'img2vtf', rgba:src.data.buffer, w:src.width, h:src.height, opt:opt },
+    { signal:signal, transfer:[src.data.buffer], onProgress:function(p){ setProgress(it, p); } }
+  );
+
+  const blob = new Blob([d.buf], { type:'application/octet-stream' });
+  it.ms = d.ms || 0;
+  it.buf = d.buf;
+  it.vtfW = d.w; it.vtfH = d.h;
+  it.hd = parseVTFHeader(d.buf);
+  it.palette = null;
+  it.notes = d.notes || [];
+
+  const detail = {
+    '文件': it.srcName,
+    '尺寸': d.w + ' × ' + d.h + (d.w !== src.width || d.h !== src.height ? '（源 ' + src.width + '×' + src.height + '）' : ''),
+    '图像格式': fmtName(d.fmt) + '（ID ' + d.fmt + '）',
+    'Mipmap': d.mipCount + ' 级',
+    '缩略图': el.low.checked ? '有' : '无',
+    '输出体积': fmtBytes(blob.size) + '（源 ' + fmtBytes(it.srcSize) + '）',
+    '压缩率': (blob.size / Math.max(1, it.srcSize) * 100).toFixed(0) + '%（相对源文件）',
+    'Flags': '0x' + (d.flags >>> 0).toString(16).toUpperCase().padStart(8,'0')
+  };
+  if(d.fmt === FMT.DXT1 && d.oneBitAlpha) detail['1 位 Alpha'] = '已写入 ONEBITALPHA';
+
+  const info = {
+    '宽 × 高': d.w + ' × ' + d.h,
+    '图像格式': fmtName(d.fmt),
+    'Mipmap': d.mipCount + ' 级',
+    '压缩': isCompressed(d.fmt) ? '有损' : '无损',
+    '源文件': fmtBytes(it.srcSize),
+    '输出': fmtBytes(blob.size)
+  };
+
+  it.result = {
+    outName: baseName(it.srcName) + '.vtf',
+    outBlob: blob,
+    thumb: rgbaToDataURL(d.thumb, d.tw, d.th),
+    prevBlob: it.file,
+    detail: detail,
+    infoText: infoText(info, it.notes),
+    info: info,
+    flags: flagList(d.flags)
+  };
+}
+
+function infoText(info, notes){
+  let s = '';
+  for(const k in info) s += '<span><b>' + k + '</b> ' + esc(info[k]) + '</span>';
+  (notes || []).forEach(function(n){ s += '<span><b>提示</b> ' + esc(n) + '</span>'; });
+  return s;
+}
+
+function thumbFromImageData(imgData){
+  const max = 128;
+  const s = Math.min(1, max / Math.max(imgData.width, imgData.height));
+  const w = Math.max(1, Math.round(imgData.width * s));
+  const h = Math.max(1, Math.round(imgData.height * s));
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  const ctx = cv.getContext('2d');
+  ctx.imageSmoothingEnabled = s < 1;
+  const tmp = document.createElement('canvas');
+  tmp.width = imgData.width; tmp.height = imgData.height;
+  tmp.getContext('2d').putImageData(imgData, 0, 0);
+  ctx.drawImage(tmp, 0, 0, w, h);
+  return cv.toDataURL('image/png');
+}
+
+async function retryItem(it){
+  it.err = null; it.errDetail = null; it.status = 'pending';
+  updateItem(it);
+  if(it.kind === 'v2p' && !it.buf){
+    try{ it.buf = await it.file.arrayBuffer(); }
+    catch(e){ it.status = 'error'; it.err = e.message; updateItem(it); updateBar(); return; }
+  }
+  runItem(it, newBatch().signal);
+}
+
+async function rerunItem(it){
+  it.needsRerun = false;
+  await runItem(it, newBatch().signal);
+}
+
+/* ---------------------- 8. 详情弹窗 ---------------------- */
+
+let modalItem = null;
+let modalURL = null;
+
+function openModal(it){
+  modalItem = it;
+  el.mTitle.textContent = it.srcName;
+  el.mask.classList.add('on');
+  el.errBox.style.display = 'none';
+
+  if(it.status === 'error'){
+    el.mTabs.style.display = 'none';
+    el.panePreview.classList.add('on');
+    el.paneCmp.classList.remove('on');
+    el.mipBar.style.display = 'none';
+    el.palTitle.style.display = 'none';
+    el.pal.innerHTML = '';
+    el.mImg.style.display = 'none';
+    el.errBox.style.display = 'block';
+    el.errBox.textContent = it.err + (it.errDetail ? '\n\n' + it.errDetail : '');
+    el.mKv.innerHTML = '';
+    el.mFlags.innerHTML = '';
+    return;
+  }
+
+  el.mImg.style.display = '';
+  el.mTabs.style.display = (it.kind === 'p2v') ? 'flex' : 'none';
+  switchTab('preview');
+
+  const r = it.result;
+  setPreview(it, r.prevBlob);
+
+  // [FEAT] 3.1.1 mip 选择（仅 VTF → PNG）
+  if(it.kind === 'v2p' && it.hd){
+    el.mipBar.style.display = 'flex';
+    const list = mipList(it.hd);
+    el.mipSel.innerHTML = list.map(function(m){
+      return '<option value="' + m.level + '">Mip ' + m.level + ' — ' + m.w + '×' + m.h +
+             ' · ' + fmtBytes(m.bytes) + '</option>';
+    }).join('');
+    el.mipSel.value = String(it.mipLevel || 0);
+    el.btnFaces.style.display = (it.hd.flags & FLAG.ENVMAP) ? '' : 'none';
+    el.btnAnim.style.display = (it.hd.frames > 1) ? '' : 'none';
+    el.btnMips.style.display = (it.hd.mipCount > 1) ? '' : 'none';
+  }else{
+    el.mipBar.style.display = 'none';
+  }
+
+  // P8 调色板
+  if(it.kind === 'v2p' && it.hd && it.hd.hiFmt === FMT.P8 && it.palette){
+    el.palTitle.style.display = 'block';
+    const html = [];
+    for(let i = 0; i < 256; i++){
+      const b = it.palette[i*4], g = it.palette[i*4+1], r2 = it.palette[i*4+2];
+      const hex = '#' + [r2,g,b].map(function(v){ return ('0'+v.toString(16)).slice(-2); }).join('');
+      html.push('<i style="background:' + hex + '" title="' + i + ' ' + hex + '" data-hex="' + hex.toUpperCase() + '"></i>');
+    }
+    el.pal.innerHTML = html.join('');
+  }else{
+    el.palTitle.style.display = 'none';
+    el.pal.innerHTML = '';
+  }
+
+  renderKV(it, it.result.detail);
+  renderFlags(it.result.flags || flagList(it.hd ? it.hd.flags : 0));
+}
+
+function renderKV(it, detail){
+  el.mKv.innerHTML = '';
+  for(const k in detail){
+    const box = document.createElement('div');
+    const dt = document.createElement('dt'); dt.textContent = k;
+    const dd = document.createElement('dd'); dd.textContent = detail[k];
+    box.appendChild(dt); box.appendChild(dd);
+    el.mKv.appendChild(box);
+  }
+}
+
+function renderFlags(list){
+  el.mFlags.innerHTML = '';
+  (list || []).forEach(function(f){
+    const s = document.createElement('span'); s.textContent = f;
+    el.mFlags.appendChild(s);
+  });
+}
+
+function setPreview(it, blob){
+  if(modalURL) URL.revokeObjectURL(modalURL);
+  modalURL = URL.createObjectURL(blob);
+  el.mImg.src = modalURL;
+}
+
+function switchTab(name){
+  const tabs = el.mTabs.querySelectorAll('.tab');
+  Array.prototype.forEach.call(tabs, function(t){ t.classList.toggle('on', t.dataset.tab === name); });
+  el.panePreview.classList.toggle('on', name === 'preview');
+  el.paneCmp.classList.toggle('on', name === 'cmp');
+  if(name === 'cmp') buildCompare(modalItem);
+}
+
+// [FEAT] 3.4 对比预览：左原图 / 右 VTF 解码回读，滑块控制 clip-path
+async function buildCompare(it){
+  if(!it || it.kind !== 'p2v' || !it.buf) return;
+  el.cmpNote.textContent = '正在生成对比图…';
+  try{
+    const d = await pool.run({ type:'vtf2png', buf:it.buf, frame:0, mip:0, face:0, maxSize:720 }, {});
+    const rgba = new Uint8Array(d.rgba);
+    const cvB = document.createElement('canvas');
+    cvB.width = d.w; cvB.height = d.h;
+    cvB.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(rgba.buffer), d.w, d.h), 0, 0);
+
+    const bmp = await createImageBitmap(it.file);
+    const cvA = document.createElement('canvas');
+    cvA.width = d.w; cvA.height = d.h;
+    const ctx = cvA.getContext('2d');
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(bmp, 0, 0, d.w, d.h);
+    if(bmp.close) bmp.close();
+
+    el.cmpA.src = cvA.toDataURL('image/png');
+    el.cmpB.src = cvB.toDataURL('image/png');
+    el.cmpNote.textContent = '左：原图　右：VTF 解码回读（' + d.w + '×' + d.h + '）';
+    setSplit(el.cmpRange.value);
+  }catch(e){
+    el.cmpNote.textContent = '对比图生成失败：' + e.message;
+  }
+}
+
+function setSplit(v){
+  const p = Math.max(0, Math.min(100, Number(v)));
+  // [FIX] 3.4 分割线左侧是原图、右侧是回读图，所以裁掉左侧 p% 而不是右侧
+  el.cmpB.style.clipPath = 'inset(0 0 0 ' + p + '%)';
+  el.cmpline.style.left = p + '%';
+}
+
+function closeModal(){
+  el.mask.classList.remove('on');
+  modalItem = null;
+  if(modalURL){ URL.revokeObjectURL(modalURL); modalURL = null; }
+  el.mImg.removeAttribute('src');
+  el.cmpA.removeAttribute('src');
+  el.cmpB.removeAttribute('src');
+}
+
+/* ---- 详情面板导出动作 ---- */
+
+async function withBusy(label, fn){
+  const old = el.busyTxt.textContent;
+  el.busy.classList.add('on');
+  el.busyTxt.textContent = label;
+  try{ await fn(); }
+  catch(e){ toast(label + '失败：' + (e.message || e)); }
+  finally{
+    el.busyTxt.textContent = old;
+    updateBusy();
+  }
+}
+
+// [FEAT] 3.1.2 导出全部 mip 为 ZIP（已编码的 mip 直接复用，缺失的现算）
+async function exportMips(it){
+  const hd = it.hd;
+  await withBusy('正在导出 mip…', async function(){
+    const files = [];
+    for(let m = 0; m < hd.mipCount; m++){
+      const d = await pool.run({ type:'vtf2png', buf:it.buf, frame:0, mip:m, face:0 }, {});
+      const blob = await imageDataToPNGBlob(new ImageData(new Uint8ClampedArray(d.rgba), d.w, d.h));
+      files.push({ name: baseName(it.srcName) + '_mip' + m + '_' + d.w + 'x' + d.h + '.png',
+                   data: new Uint8Array(await blob.arrayBuffer()) });
+    }
+    download(await makeZip(files), baseName(it.srcName) + '_mips.zip');
+    toast('已导出 ' + files.length + ' 级 mip');
+  });
+}
+
+// [FEAT] 3.1.3 立方体贴图 6 面分别导出为 PNG（ZIP 打包）
+async function exportFaces(it){
+  const names = ['ft','bk','lf','rt','up','dn'];
+  await withBusy('正在导出 6 面…', async function(){
+    const files = [];
+    for(let f = 0; f < 6; f++){
+      const d = await pool.run({ type:'vtf2png', buf:it.buf, frame:0, mip:0, face:f }, {});
+      const blob = await imageDataToPNGBlob(new ImageData(new Uint8ClampedArray(d.rgba), d.w, d.h));
+      files.push({ name: baseName(it.srcName) + '_' + names[f] + '.png',
+                   data: new Uint8Array(await blob.arrayBuffer()) });
+    }
+    download(await makeZip(files), baseName(it.srcName) + '_faces.zip');
+    toast('已导出 6 个面');
+  });
+}
+
+// [FEAT] 3.1.4 动画导出：帧数超过 256 时截断并提示（防止一次性吃掉几百 MB 内存）
+async function exportAnim(it){
+  const n = Math.min(it.hd.frames, 256);
+  await withBusy('正在合成动画…', async function(){
+    const blobs = [];
+    for(let f = 0; f < n; f++){
+      const d = await pool.run({ type:'vtf2png', buf:it.buf, frame:f, mip:0, face:0 }, {});
+      blobs.push(await imageDataToPNGBlob(new ImageData(new Uint8ClampedArray(d.rgba), d.w, d.h)));
+    }
+    const apng = await makeAPNG(blobs, 100);
+    download(apng, baseName(it.srcName) + '.png');
+    toast('已导出 APNG（' + n + ' 帧）');
+  });
+}
+
+/* ---------------------- 9. 事件绑定 ---------------------- */
+
+el.drop.addEventListener('click', function(){ el.file.click(); });
+el.file.addEventListener('change', function(){
+  addFiles(el.file.files);
+  el.file.value = '';
+});
+
+['dragenter','dragover'].forEach(function(ev){
+  el.drop.addEventListener(ev, function(e){ e.preventDefault(); el.drop.classList.add('over'); });
+});
+['dragleave','drop'].forEach(function(ev){
+  el.drop.addEventListener(ev, function(e){ e.preventDefault(); el.drop.classList.remove('over'); });
+});
+el.drop.addEventListener('drop', function(e){
+  if(e.dataTransfer && e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+});
+// 整页拖放（避免拖到别处时浏览器直接打开文件）
+['dragover','drop'].forEach(function(ev){
+  window.addEventListener(ev, function(e){ e.preventDefault(); });
+});
+
+el.mClose.addEventListener('click', closeModal);
+el.mask.addEventListener('click', function(e){ if(e.target === el.mask) closeModal(); });
+window.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeModal(); });
+
+el.mTabs.addEventListener('click', function(e){
+  const b = e.target.closest('.tab');
+  if(b) switchTab(b.dataset.tab);
+});
+el.cmpRange.addEventListener('input', function(){ setSplit(this.value); });
+
+el.mipSel.addEventListener('change', async function(){
+  const it = modalItem;
+  if(!it) return;
+  const lv = parseInt(this.value, 10);
+  it.mipLevel = lv;
+  el.mImg.style.opacity = '.35';
+  try{
+    let blob = it.mipBlobs[lv];
+    if(!blob){
+      const d = await pool.run({ type:'vtf2png', buf:it.buf, frame:it.frame, mip:lv, face:0 }, {});
+      blob = await imageDataToPNGBlob(new ImageData(new Uint8ClampedArray(d.rgba), d.w, d.h));
+      it.mipBlobs[lv] = blob;
+    }
+    it.result.prevBlob = blob;
+    setPreview(it, blob);
+    const det = Object.assign({}, it.result.detail);
+    if(it.hd){
+      const dim = mipDims(it.hd.w, it.hd.h, lv);
+      det['尺寸'] = dim[0] + ' × ' + dim[1] + '（Mip ' + lv + '）';
+    }
+    renderKV(it, det);
+  }catch(e){
+    toast('切换 mip 失败：' + e.message);
+  }
+  el.mImg.style.opacity = '';
+});
+
+el.pal.addEventListener('click', function(e){
+  const i = e.target.closest('i');
+  if(!i) return;
+  copyText(i.dataset.hex);
+});
+
+el.btnMips.addEventListener('click', function(){ if(modalItem) exportMips(modalItem); });
+el.btnFaces.addEventListener('click', function(){ if(modalItem) exportFaces(modalItem); });
+el.btnAnim.addEventListener('click', function(){ if(modalItem) exportAnim(modalItem); });
+
+[el.fmt, el.npot, el.mip, el.low, el.quality, el.filter, el.srgb, el.premult].forEach(function(x){
+  x.addEventListener('change', function(){ saveOpts(); clearPresetHighlight(); });
+});
+[el.reflect, el.bump, el.flagsHex].forEach(function(x){
+  x.addEventListener('change', saveOpts);
+});
+
+function clearPresetHighlight(){
+  Array.prototype.forEach.call(el.presets.querySelectorAll('.pill'), function(b){ b.classList.remove('on'); });
+}
+
+el.presets.addEventListener('click', function(e){
+  const b = e.target.closest('.pill[data-preset]');
+  if(b) applyPreset(b.dataset.preset);
+});
+
+el.flagRec.addEventListener('click', function(){
+  const fmt = el.fmt.value === 'auto' ? FMT.DXT5 : parseInt(el.fmt.value, 10);
+  let f = FLAG.CLAMPS | FLAG.CLAMPT;
+  if(fmt === FMT.DXT5) f |= FLAG.EIGHTBITALPHA;
+  if(el.srgb.checked) f |= FLAG.SRGB;
+  if(!el.mip.checked) f |= FLAG.NOMIP;
+  el.flagsHex.value = '0x' + (f >>> 0).toString(16).toUpperCase().padStart(8, '0');
+  saveOpts();
+  toast('已填入推荐 flags');
+});
+
+el.copyCfg.addEventListener('click', function(){
+  const url = location.origin + location.pathname + '#?opts=' + b64enc(JSON.stringify(currentOptsSnapshot()));
+  copyText(url);
+});
+
+// [FEAT] 2.1 取消：AbortController 统一标记，Worker 在批次边界检查后退出
+el.cancel.addEventListener('click', function(){
+  abortAll();
+  items.forEach(function(it){
+    if(it.status === 'pending'){ it.status = 'error'; it.err = '已取消'; updateItem(it); }
+  });
+  updateBar();
+  toast('已请求取消');
+});
+
+el.clear.addEventListener('click', function(){
+  abortAll();
+  items.length = 0;
+  nodes.forEach(function(d){ d.remove(); });
+  nodes.clear();
+  dirty = false;
+  updateBar();
+});
+
+el.dlAll.addEventListener('click', async function(){
+  const done = items.filter(function(x){ return x.status === 'done'; });
+  if(!done.length) return;
+  el.busy.classList.add('on');
+  el.busyTxt.textContent = '正在打包 ZIP…';
+  try{
+    const used = {};
+    const files = [];
+    for(const it of done){
+      let name = it.result.outName, base = name, n = 2;
+      while(used[name]){
+        const dot = base.lastIndexOf('.');
+        name = dot > 0 ? base.slice(0, dot) + '_' + n + base.slice(dot) : base + '_' + n;
+        n++;
+      }
+      used[name] = 1;
+      files.push({ name:name, data:new Uint8Array(await it.result.outBlob.arrayBuffer()) });
+    }
+    download(await makeZip(files), 'vtf-convert-' + done.length + '-files.zip');
+    dirty = false;
+    toast('已打包 ' + files.length + ' 个文件');
+  }catch(e){
+    toast('打包失败：' + e.message);
+  }
+  updateBusy();
+});
+
+// [FEAT] 2.7 粘贴图片
+window.addEventListener('paste', function(e){
+  if(!e.clipboardData) return;
+  const files = [];
+  const list = e.clipboardData.items || [];
+  for(let i = 0; i < list.length; i++){
+    const item = list[i];
+    if(item.kind === 'file' && /^image\//.test(item.type)){
+      const f = item.getAsFile();
+      if(f){
+        const ext = (item.type.split('/')[1] || 'png').replace('jpeg', 'jpg');
+        files.push(new File([f], 'pasted-' + Date.now() + '-' + i + '.' + ext,
+          { lastModified: Date.now() }));
+      }
+    }
+  }
+  if(files.length){
+    e.preventDefault();
+    addFiles(files);
+    toast('已从剪贴板添加 ' + files.length + ' 张图片');
+  }
+});
+
+// [FEAT] 2.6 关闭页面前提示（有未下载的成果时）
+window.addEventListener('beforeunload', function(e){
+  if(dirty){
+    e.preventDefault();
+    e.returnValue = '';
+    return '';
+  }
+});
+
+/* ---------------------- 10. 初始化 ---------------------- */
+
+loadOpts();
+readHashOpts();
+updateBar();
+
+// 空闲时预热 Worker（不阻塞首屏）
+(function warmLater(){
+  const go = function(){ try{ pool.warm(); }catch(e){} };
+  if(window.requestIdleCallback) requestIdleCallback(go, { timeout:1500 });
+  else setTimeout(go, 600);
+})();
+
+</script>
+</body>
+</html>
